@@ -62,74 +62,128 @@ class Speech(object):
 			# Allocate and initialize the default TTS
 			self.darwin = NSSpeechSynthesizer.alloc().init()
 
+	def dolphin_running(self):
+		return self.dolphin is not None and self.dolphin.DolAccess_GetSystem() != DOLACCESS_NONE
+
+	def dolphin_say(self, text, interrupt=False):
+		if interrupt:
+			self.dolphin.DolAccess_Action(DOLACCESS_MUTE)
+		self.dolphin.DolAccess_Command(text, len(text) * 2 + 2, DOLACCESS_SPEAK)
+
+	def dolphin_silence(self):
+		self.dolphin.DolAccess_Action(DOLACCESS_MUTE)
+
+	def jfw_running(self):
+		return win32gui.FindWindow("JFWUI2", None)
+
+	def jfw_say(self, text, interrupt=False):
+		try:
+			jfw = win32com.client.Dispatch("FreedomSci.JawsApi")
+		except pywintypes.com_error:
+			return
+		jfw.SayString(text, int(interrupt))
+
+	def jfw_silence(self):
+		try:
+			jfw = win32com.client.Dispatch("FreedomSci.JawsApi")
+		except pywintypes.com_error:
+			return
+		jfw.StopSpeech()
+
+	def nvda_running(self):
+		return self.nvda.nvdaController_testIfRunning() == 0
+
+	def nvda_say(self, text, interrupt=False):
+		if interrupt:
+			self.nvda.nvdaController_cancelSpeech()
+		self.nvda.nvdaController_speakText(text)
+
+	def nvda_silence(self):
+		self.nvda.nvdaController_cancelSpeech()
+
+	def sa_running(self):
+		return self.sa.SA_IsRunning()
+
+	def sa_say(self, text, interrupt=False):
+		if interrupt:
+			self.sa.SA_StopAudio()
+		self.sa.SA_SayW(text)
+
+	def sa_silence(self):
+		self.sa.SA_StopAudio()
+
+	def sapi_running(self):
+		return self.sapi is not None
+
+	def sapi_say(self, text, interrupt=False):
+		self.sapi.Speak(text, SPF_ASYNC | SPF_PURGEBEFORESPEAK | SPF_IS_NOT_XML if interrupt else SPF_ASYNC | SPF_IS_NOT_XML)
+
+	def sapi_silence(self):
+		self.sapi.Speak("", SPF_ASYNC | SPF_PURGEBEFORESPEAK | SPF_IS_NOT_XML)
+
+	def we_running(self):
+		return win32gui.FindWindow("GWMExternalControl", "External Control")
+
+	def we_say(self, text, interrupt=False):
+		try:
+			we = win32com.client.Dispatch("GWSpeak.Speak")
+		except pywintypes.com_error:
+			return
+		if interrupt:
+			we.Silence()
+		we.SpeakString(text)
+
+	def we_silence(self):
+		try:
+			we = win32com.client.Dispatch("GWSpeak.Speak")
+		except pywintypes.com_error:
+			return
+		we.Silence()
+
 	def say(self, text, interrupt=False):
 		if PLATFORM_SYSTEM == "Darwin":
 			if interrupt:
 				self.darwin.stopSpeaking()
 			self.darwin.startSpeakingString_(text)
 		elif PLATFORM_SYSTEM == "Windows":
-			if self.nvda.nvdaController_testIfRunning()==0:
-				if interrupt:
-					self.nvda.nvdaController_cancelSpeech()
-				self.nvda.nvdaController_speakText(text)
-			elif self.sa.SA_IsRunning():
-				if interrupt:
-					self.sa.SA_StopAudio()
-				self.sa.SA_SayW(str(text))
-			elif self.dolphin is not None and self.dolphin.DolAccess_GetSystem() != DOLACCESS_NONE:
-				if interrupt:
-					self.dolphin.DolAccess_Action(DOLACCESS_MUTE)
-				self.dolphin.DolAccess_Command(text, len(text) * 2 + 2, DOLACCESS_SPEAK)
-			elif win32gui.FindWindow("GWMExternalControl", "External Control"):
-				try:
-					we = win32com.client.Dispatch("GWSpeak.Speak")
-				except pywintypes.com_error:
-					return
-				if interrupt:
-					we.Silence()
-				we.SpeakString(text)
-			elif win32gui.FindWindow("JFWUI2", None):
-				try:
-					jfw = win32com.client.Dispatch("FreedomSci.JawsApi")
-				except pywintypes.com_error:
-					return
-				jfw.SayString(text, int(interrupt))
-			elif self.sapi is not None:
-				self.sapi.Speak(text, SPF_ASYNC | SPF_PURGEBEFORESPEAK | SPF_IS_NOT_XML if interrupt else SPF_ASYNC | SPF_IS_NOT_XML)
+			if self.nvda_running():
+				self.nvda_say(text, interrupt)
+			elif self.sa_running():
+				self.sa_say(text, interrupt)
+			elif self.dolphin_running():
+				self.dolphin_say(text, interrupt)
+			elif self.we_running():
+				self.we_say(text, interrupt)
+			elif self.jfw_running():
+				self.jfw_say(text, interrupt)
+			elif self.sapi_running():
+				self.sapi_say(text, interrupt)
 
 	def silence(self):
 		if PLATFORM_SYSTEM == "Darwin":
 			self.darwin.stopSpeaking()
 		elif PLATFORM_SYSTEM == "Windows":
-			if self.nvda.nvdaController_testIfRunning()==0:
-				self.nvda.nvdaController_cancelSpeech()
-			elif self.sa.SA_IsRunning():
-				self.sa.SA_StopAudio()
-			elif self.dolphin is not None and self.dolphin.DolAccess_GetSystem() != DOLACCESS_NONE:
-				self.dolphin.DolAccess_Action(DOLACCESS_MUTE)
-			elif win32gui.FindWindow("GWMExternalControl", "External Control"):
-				try:
-					we = win32com.client.Dispatch("GWSpeak.Speak")
-				except pywintypes.com_error:
-					return
-				we.Silence()
-			elif win32gui.FindWindow("JFWUI2", None):
-				try:
-					jfw = win32com.client.Dispatch("FreedomSci.JawsApi")
-				except pywintypes.com_error:
-					return
-				jfw.StopSpeech()
-			elif self.sapi is not None:
-				self.sapi.Speak("", SPF_ASYNC | SPF_PURGEBEFORESPEAK | SPF_IS_NOT_XML)
+			if self.nvda_running():
+				self.nvda_silence()
+			elif self.sa_running():
+				self.sa_silence()
+			elif self.dolphin_running():
+				self.dolphin_silence()
+			elif self.we_running():
+				self.we_silence()
+			elif self.jfw_running():
+				self.jfw_silence()
+			elif self.sapi_running():
+				self.sapi_silence()
 
 	def speaking(self):
 		if PLATFORM_SYSTEM == "Darwin":
 			return self.darwin.isSpeaking()
 		elif PLATFORM_SYSTEM == "Windows":
-			if self.nvda.nvdaController_testIfRunning()==0 or self.sa.SA_IsRunning() or self.dolphin is not None and self.dolphin.DolAccess_GetSystem() != DOLACCESS_NONE or win32gui.FindWindow("GWMExternalControl", "External Control") or win32gui.FindWindow("JFWUI2", None):
+			if self.nvda_running() or self.sa_running() or self.dolphin_running() or self.we_running() or self.jfw_running():
 				# None of the screen reader APIs support retrieving speaking status.
 				return False
-			elif self.sapi is not None:
+			elif self.sapi_running():
 				return self.sapi.Status.RunningState != 1
 
 
