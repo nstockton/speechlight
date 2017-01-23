@@ -52,7 +52,9 @@ class Speech(object):
 				self.dolphin = None
 				self.nvda = ctypes.windll.LoadLibrary(os.path.join(LIB_DIRECTORY, "nvdaControllerClient64.dll"))
 				self.sa = ctypes.windll.LoadLibrary(os.path.join(LIB_DIRECTORY, "SAAPI64.dll"))
+			self.nvda.nvdaController_brailleMessage.argtypes = (ctypes.c_wchar_p,)
 			self.nvda.nvdaController_speakText.argtypes = (ctypes.c_wchar_p,)
+			self.sa.SA_BrlShowTextW.argtypes = (ctypes.c_wchar_p,)
 			self.sa.SA_SayW.argtypes = (ctypes.c_wchar_p,)
 			try:
 				self.sapi = win32com.client.Dispatch("SAPI.SpVoice")
@@ -73,6 +75,13 @@ class Speech(object):
 	def dolphin_silence(self):
 		self.dolphin.DolAccess_Action(DOLACCESS_MUTE)
 
+	def jfw_braille(self, text):
+		try:
+			jfw = win32com.client.Dispatch("FreedomSci.JawsApi")
+		except pywintypes.com_error:
+			return
+		jfw.RunFunction("BrailleString(\"{text}\")".format(text=text.replace('"', "'")))
+
 	def jfw_running(self):
 		return win32gui.FindWindow("JFWUI2", None)
 
@@ -90,6 +99,9 @@ class Speech(object):
 			return
 		jfw.StopSpeech()
 
+	def nvda_braille(self, text):
+		self.nvda.nvdaController_brailleMessage(text)
+
 	def nvda_running(self):
 		return self.nvda.nvdaController_testIfRunning() == 0
 
@@ -100,6 +112,9 @@ class Speech(object):
 
 	def nvda_silence(self):
 		self.nvda.nvdaController_cancelSpeech()
+
+	def sa_braille(self, text):
+		self.sa.SA_BrlShowTextW(text)
 
 	def sa_running(self):
 		return self.sa.SA_IsRunning()
@@ -140,24 +155,39 @@ class Speech(object):
 			return
 		we.Silence()
 
-	def say(self, text, interrupt=False):
+	def output(self, text, interrupt=False, speak=True, braille=True):
 		if PLATFORM_SYSTEM == "Darwin":
 			if interrupt:
 				self.darwin.stopSpeaking()
 			self.darwin.startSpeakingString_(text)
 		elif PLATFORM_SYSTEM == "Windows":
 			if self.nvda_running():
-				self.nvda_say(text, interrupt)
+				if speak:
+					self.nvda_say(text, interrupt)
+				if braille:
+					self.nvda_braille(text)
 			elif self.sa_running():
-				self.sa_say(text, interrupt)
+				if speak:
+					self.sa_say(text, interrupt)
+				if braille:
+					self.sa_braille(text, interrupt)
 			elif self.dolphin_running():
 				self.dolphin_say(text, interrupt)
 			elif self.we_running():
 				self.we_say(text, interrupt)
 			elif self.jfw_running():
-				self.jfw_say(text, interrupt)
+				if speak:
+					self.jfw_say(text, interrupt)
+				if braille:
+					self.jfw_braille(text, interrupt)
 			elif self.sapi_running():
 				self.sapi_say(text, interrupt)
+
+	def braille(self, text):
+		self.output(text, speak=False, braille=True)
+
+	def say(self, text, interrupt=False):
+		self.output(text, interrupt, speak=True, braille=False)
 
 	def silence(self):
 		if PLATFORM_SYSTEM == "Darwin":
