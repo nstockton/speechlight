@@ -136,24 +136,31 @@ class Speech(object):
 	def sapi_silence(self):
 		self.sapi.Speak("", SPF_ASYNC | SPF_PURGEBEFORESPEAK | SPF_IS_NOT_XML)
 
+	def we_braille(self, text):
+		try:
+			we = win32com.client.Dispatch("WindowEyes.Application")
+		except pywintypes.com_error:
+			return
+		we.Braille.Display(text)
+
 	def we_running(self):
 		return win32gui.FindWindow("GWMExternalControl", "External Control")
 
 	def we_say(self, text, interrupt=False):
 		try:
-			we = win32com.client.Dispatch("GWSpeak.Speak")
+			we = win32com.client.Dispatch("WindowEyes.Application")
 		except pywintypes.com_error:
 			return
 		if interrupt:
-			we.Silence()
-		we.SpeakString(text)
+			we.Speech.Silence()
+		we.Speech.Speak(text)
 
 	def we_silence(self):
 		try:
-			we = win32com.client.Dispatch("GWSpeak.Speak")
+			we = win32com.client.Dispatch("WindowEyes.Application")
 		except pywintypes.com_error:
 			return
-		we.Silence()
+		we.Speech.Silence()
 
 	def output(self, text, interrupt=False, speak=True, braille=True):
 		if PLATFORM_SYSTEM == "Darwin":
@@ -174,7 +181,10 @@ class Speech(object):
 			elif self.dolphin_running():
 				self.dolphin_say(text, interrupt)
 			elif self.we_running():
-				self.we_say(text, interrupt)
+				if speak:
+					self.we_say(text, interrupt)
+				if braille:
+					self.we_braille(text)
 			elif self.jfw_running():
 				if speak:
 					self.jfw_say(text, interrupt)
