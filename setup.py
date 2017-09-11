@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 import sys
 
 try:
@@ -22,6 +22,8 @@ setup(
 	scripts=[],
 	url="https://github.com/nstockton/speechlight",
 	packages=["speechlight"],
+	package_data={b"speech_libs": ["speech_libs/*.dll"]},
+	include_package_data=True,
 	license="Mozilla Public License 2.0 (MPL 2.0)",
 	platforms="Posix; MacOS X; Windows",
 	setup_requires=requirements,
