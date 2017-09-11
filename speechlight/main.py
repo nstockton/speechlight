@@ -26,7 +26,7 @@ try:
 	if sys.frozen or sys.importers:
 		LIB_DIRECTORY = os.path.join(os.path.dirname(sys.executable), "speech_libs")
 except AttributeError:
-	LIB_DIRECTORY = os.path.join(os.path.dirname(os.path.realpath(__file__)), "speech_libs")
+	LIB_DIRECTORY = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "speech_libs")
 
 # Dolphin constants
 DOLACCESS_NONE = 0 # Indicates no Dolphin products are running.
