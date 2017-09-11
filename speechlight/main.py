@@ -21,13 +21,6 @@ elif PLATFORM_SYSTEM == "Darwin":
 	# For Mac OS X, we need the NSSpeechSynthesizer class from the Cocoa module
 	from Cocoa import NSSpeechSynthesizer
 
-# determine the directory where the screen reader API DLL files are stored, even if Python is running through a frozen Py2EXE.
-try:
-	if sys.frozen or sys.importers:
-		LIB_DIRECTORY = os.path.join(os.path.dirname(sys.executable), "speech_libs")
-except AttributeError:
-	LIB_DIRECTORY = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "speech_libs")
-
 # Dolphin constants
 DOLACCESS_NONE = 0 # Indicates no Dolphin products are running.
 DOLACCESS_SPEAK = 1
@@ -39,19 +32,29 @@ SPF_PURGEBEFORESPEAK = 2 # Purges all pending speak requests prior to this speak
 SPF_IS_NOT_XML = 16 # The input text will not be parsed for XML markup.
 
 
+def where():
+	"""Return the directory where the screen reader API DLL files are stored, even if Python is running through a frozen Py2EXE."""
+	try:
+		if sys.frozen or sys.importers:
+			return os.path.join(os.path.dirname(sys.executable), "speech_libs")
+	except AttributeError:
+		return os.path.join(os.path.dirname(os.path.realpath(__file__)), "speech_libs")
+
+
 class Speech(object):
 	def __init__(self):
 		if PLATFORM_SYSTEM == "Windows":
+			lib_directory = where()
 			if platform.architecture()[0] == "32bit":
-				self.dolphin = ctypes.windll.LoadLibrary(os.path.join(LIB_DIRECTORY, "dolapi32.dll"))
+				self.dolphin = ctypes.windll.LoadLibrary(os.path.join(lib_directory, "dolapi32.dll"))
 				self.dolphin.DolAccess_Command.argtypes = (ctypes.c_wchar_p, ctypes.c_int, ctypes.c_int)
 				self.dolphin.DolAccess_Action.argtypes = (ctypes.c_int,)
-				self.nvda = ctypes.windll.LoadLibrary(os.path.join(LIB_DIRECTORY, "nvdaControllerClient32.dll"))
-				self.sa = ctypes.windll.LoadLibrary(os.path.join(LIB_DIRECTORY, "SAAPI32.dll"))
+				self.nvda = ctypes.windll.LoadLibrary(os.path.join(lib_directory, "nvdaControllerClient32.dll"))
+				self.sa = ctypes.windll.LoadLibrary(os.path.join(lib_directory, "SAAPI32.dll"))
 			else:
 				self.dolphin = None
-				self.nvda = ctypes.windll.LoadLibrary(os.path.join(LIB_DIRECTORY, "nvdaControllerClient64.dll"))
-				self.sa = ctypes.windll.LoadLibrary(os.path.join(LIB_DIRECTORY, "SAAPI64.dll"))
+				self.nvda = ctypes.windll.LoadLibrary(os.path.join(lib_directory, "nvdaControllerClient64.dll"))
+				self.sa = ctypes.windll.LoadLibrary(os.path.join(lib_directory, "SAAPI64.dll"))
 			self.nvda.nvdaController_brailleMessage.argtypes = (ctypes.c_wchar_p,)
 			self.nvda.nvdaController_speakText.argtypes = (ctypes.c_wchar_p,)
 			self.sa.SA_BrlShowTextW.argtypes = (ctypes.c_wchar_p,)

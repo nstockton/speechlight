@@ -1,5 +1,4 @@
-from __future__ import print_function, unicode_literals
-import glob
+from __future__ import print_function
 import sys
 
 from setuptools import setup, find_packages
@@ -23,7 +22,7 @@ setup(
 	url="https://github.com/nstockton/speechlight",
 	package_dir={"speechlight": "speechlight"},
 	packages=find_packages(),
-	package_data={"speechlight/speech_libs": glob.glob("speech_libs\\*")},
+	package_data={"speechlight.speech_libs": ["*.dll"]},
 	include_package_data=True,
 	zip_safe=False,
 	license="Mozilla Public License 2.0 (MPL 2.0)",

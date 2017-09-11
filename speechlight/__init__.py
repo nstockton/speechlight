@@ -6,4 +6,4 @@
 
 __version__ = "1.0"
 
-from .main import Speech
+from .main import where, Speech
