@@ -1,10 +1,8 @@
 from __future__ import print_function, unicode_literals
+import glob
 import sys
 
-try:
-	from setuptools import setup
-except ImportError:
-	from distutils.core import setup
+from setuptools import setup, find_packages
 
 
 if sys.version_info <= (2, 7):
@@ -17,13 +15,17 @@ requirements = []
 
 setup(
 	name="speechlight",
+	author="Nick Stockton",
+	author_email="nstockton@gmail.com",
 	version="1.0",
 	description="A lightweight Python library providing a common interface to multiple TTS and screen reader APIs",
 	scripts=[],
 	url="https://github.com/nstockton/speechlight",
-	packages=["speechlight"],
-	package_data={b"speech_libs": ["speech_libs/*.dll"]},
+	package_dir={"speechlight": "speechlight"},
+	packages=find_packages(),
+	package_data={"speechlight/speech_libs": glob.glob("speech_libs\\*")},
 	include_package_data=True,
+	zip_safe=False,
 	license="Mozilla Public License 2.0 (MPL 2.0)",
 	platforms="Posix; MacOS X; Windows",
 	setup_requires=requirements,
@@ -33,14 +35,7 @@ setup(
 		"Intended Audience :: Developers",
 		"License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
 		"Operating System :: OS Independent",
-		"Programming Language :: Python :: 2.7",
-		"Programming Language :: Python :: 3.0",
-		"Programming Language :: Python :: 3.1",
-		"Programming Language :: Python :: 3.2",
-		"Programming Language :: Python :: 3.3",
-		"Programming Language :: Python :: 3.4",
-		"Programming Language :: Python :: 3.5",
-		"Programming Language :: Python :: 3.6",
+		"Programming Language :: Python",
 		"Topic :: Software Development :: Libraries",
 	]
 )
