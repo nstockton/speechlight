@@ -1,14 +1,13 @@
 from __future__ import print_function
 import sys
-
-from setuptools import setup, find_packages
-
-
 if sys.version_info <= (2, 7):
 	error = "Requires Python Version 2.7 or above... exiting."
 	print(error, file=sys.stderr)
 	sys.exit(1)
 
+from setuptools import setup, find_packages
+
+from speechlight import __version__ as VERSION
 
 requirements = []
 
@@ -16,7 +15,7 @@ setup(
 	name="speechlight",
 	author="Nick Stockton",
 	author_email="nstockton@gmail.com",
-	version="1.0",
+	version=VERSION,
 	description="A lightweight Python library providing a common interface to multiple TTS and screen reader APIs",
 	scripts=[],
 	url="https://github.com/nstockton/speechlight",
