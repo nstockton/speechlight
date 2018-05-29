@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 
 from speechlight import __version__ as VERSION
 
-requirements = []
+requirements = ["pywin32"]
 
 setup(
 	name="speechlight",
