@@ -14,9 +14,11 @@ PLATFORM_SYSTEM = platform.system()
 
 # Platform specific third-party modules
 if PLATFORM_SYSTEM == "Windows":
-	import win32gui
 	import win32com.client
 	import pywintypes
+	FindWindow = ctypes.WinDLL("user32").FindWindowW
+	FindWindow.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p]
+	FindWindow.restype = ctypes.c_void_p
 elif PLATFORM_SYSTEM == "Darwin":
 	# For Mac OS X, we need the NSSpeechSynthesizer class from the Cocoa module
 	from Cocoa import NSSpeechSynthesizer
@@ -86,7 +88,7 @@ class Speech(object):
 		jfw.RunFunction("BrailleString(\"{text}\")".format(text=text.replace('"', "'")))
 
 	def jfw_running(self):
-		return win32gui.FindWindow("JFWUI2", None)
+		return FindWindow("JFWUI2", None)
 
 	def jfw_say(self, text, interrupt=False):
 		try:
@@ -147,7 +149,7 @@ class Speech(object):
 		we.Braille.Display(text)
 
 	def we_running(self):
-		return win32gui.FindWindow("GWMExternalControl", "External Control")
+		return FindWindow("GWMExternalControl", "External Control")
 
 	def we_say(self, text, interrupt=False):
 		try:
