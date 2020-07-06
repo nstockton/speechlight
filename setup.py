@@ -1,15 +1,21 @@
-from __future__ import print_function
-import sys
-if sys.version_info <= (2, 7):
-	error = "Requires Python Version 2.7 or above... exiting."
-	print(error, file=sys.stderr)
-	sys.exit(1)
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+
+# Third-party Modules:
 from setuptools import setup, find_packages
 
-from speechlight import __version__ as VERSION
+# Local Modules:
+from speechlight import __version__ as VERSION, SYSTEM_PLATFORM
 
-requirements = ["pywin32"]
+
+REQUIREMENTS = []
+
+
+if SYSTEM_PLATFORM == "Windows":
+	REQUIREMENTS.append("pywin32")
+
 
 setup(
 	name="speechlight",
@@ -26,14 +32,15 @@ setup(
 	zip_safe=False,
 	license="Mozilla Public License 2.0 (MPL 2.0)",
 	platforms="Posix; MacOS X; Windows",
-	setup_requires=requirements,
-	install_requires=requirements,
+	setup_requires=REQUIREMENTS,
+	install_requires=REQUIREMENTS,
 	classifiers=[
-		"Development Status :: 4 - Beta",
+		"Development Status :: 5 - Production/Stable",
 		"Intended Audience :: Developers",
 		"License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
 		"Operating System :: OS Independent",
 		"Programming Language :: Python",
+		"Topic :: Adaptive Technologies",
 		"Topic :: Software Development :: Libraries",
 	]
 )
