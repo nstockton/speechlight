@@ -6,14 +6,15 @@
 # Third-party Modules:
 from setuptools import setup, find_packages
 
-# Local Modules:
-from speechlight import __version__ as VERSION, SYSTEM_PLATFORM
+# Built-in Modules:
+import platform
 
 
+VERSION = "1.1"
 REQUIREMENTS = []
 
 
-if SYSTEM_PLATFORM == "Windows":
+if platform.system() == "Windows":
 	REQUIREMENTS.append("pywin32")
 
 
