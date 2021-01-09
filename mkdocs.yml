@@ -1,0 +1,76 @@
+# mkdocs.yml
+site_name: "Speechlight"
+site_author: "Nick Stockton"
+site_description: "Speechlight Main Page"
+site_url: "https://nstockton.github.io/speechlight"
+repo_name: "nstockton/speechlight"
+repo_url: "https://github.com/nstockton/speechlight"
+edit_uri: ""
+copyright: "Copyright \xa9 2021 Nick Stockton"
+docs_dir: "docs"
+site_dir: "site"
+
+nav:
+  - Home: index.md
+  - API Index: api/index.md
+  - API Navigation:
+      - base.py: api/base.md
+      - darwin.py: api/darwin.md
+      - dummy.py: api/dummy.py.md
+      - utils.py: api/utils.md
+      - windows.py: api/windows.md
+  - License: license.md
+
+theme:
+  name: "material"
+  custom_dir: "material_theme/"
+  include_search_page: false
+  search_index_only: false
+  highlightjs: true
+  hljs_languages:
+    - python
+  hljs_style: github
+  navigation_depth: 2
+  #nav_style: "dark"
+  shortcuts:
+    help: 191    # ?
+    next: 78     # n
+    previous: 80 # p
+    search: 83   # s
+
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+      linenums: false
+  - pymdownx.superfences
+  - pymdownx.tasklist
+  - pymdownx.tabbed
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          setup_commands:
+            - import sys
+            - sys.path.insert(0, "docs")
+          rendering:
+            show_root_heading: true
+            heading_level: 1
+            group_by_category: true
+            show_source: true
+          selection:
+            docstring_style: google
+            inherited_members: true
+            docstring_options:
+              replace_admonitions: yes
+            filters:
+              - "!^_"  # Private items.
+              - "^__init__$"  # Except for __init__.
+      custom_templates: "mkdocstrings_templates"
+      watch:
+        - "speechlight"
