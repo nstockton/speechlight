@@ -13,6 +13,7 @@ mkdocs-material = {version = "==6.2.3"}
 mkdocstrings = {version = "==0.13.6"}
 mypy = "*"
 pre-commit = "*"
+twine = "*"
 pytkdocs = {git = "https://github.com/nstockton/pytkdocs.git", ref = "tab-indentation-parser"}
 tan = {git = "https://github.com/nstockton/tan.git"}
 
