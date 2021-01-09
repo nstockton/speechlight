@@ -7,11 +7,12 @@
 from __future__ import annotations
 
 # Built-in Modules:
+import pathlib
 import platform
 from typing import List
 
 # Third-party Modules:
-from setuptools import find_packages, setup
+from setuptools import setup
 
 
 NAME: str = "Speechlight"
@@ -19,9 +20,11 @@ DESCRIPTION: str = (
 	"A lightweight Python library providing a common interface to multiple TTS and screen reader APIs."
 )
 AUTHOR: str = "Nick Stockton"
-AUTHOR_EMAIL: str = "nstockton@gmail.com"
 VERSION: str = "1.2"
 URL: str = "https://github.com/nstockton/speechlight"
+# The directory containing this file
+HERE: pathlib.Path = pathlib.Path(__file__).parent
+README: str = (HERE / "README.md").read_text()
 REQUIREMENTS: List[str] = []
 
 
@@ -30,28 +33,30 @@ if platform.system() == "Windows":
 
 
 setup(
+	python_requires=">=3.7",
 	name=NAME,
 	author=AUTHOR,
-	author_email=AUTHOR_EMAIL,
 	version=VERSION,
 	description=DESCRIPTION,
-	scripts=[],
+	long_description=README,
+	long_description_content_type="text/markdown",
 	url=URL,
 	package_dir={"speechlight": "speechlight"},
-	packages=find_packages(),
-	package_data={"speechlight.speech_libs": ["*.dll"]},
-	include_package_data=True,
+	packages=["speechlight"],
+	package_data={"speechlight": ["speech_libs/*"]},
 	zip_safe=False,
-	license="Mozilla Public License 2.0 (MPL 2.0)",
-	platforms="Posix; MacOS X; Windows",
 	setup_requires=REQUIREMENTS,
 	install_requires=REQUIREMENTS,
+	scripts=[],
+	license="Mozilla Public License 2.0 (MPL 2.0)",
+	platforms="Posix; MacOS X; Windows",
 	classifiers=[
+		"License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+		"Programming Language :: Python :: 3",
+		"Programming Language :: Python :: 3.7",
 		"Development Status :: 5 - Production/Stable",
 		"Intended Audience :: Developers",
-		"License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
 		"Operating System :: OS Independent",
-		"Programming Language :: Python",
 		"Topic :: Adaptive Technologies",
 		"Topic :: Software Development :: Libraries",
 	],

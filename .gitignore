@@ -90,4 +90,5 @@ ENV/
 
 # Misc
 Pipfile.lock
+site/
 *.ignore

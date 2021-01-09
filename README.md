@@ -5,7 +5,7 @@ A lightweight Python library providing a common interface to multiple TTS and sc
 
 ## License And Credits
 
-Speechlight is licensed under the terms of the [Mozilla Public License, version 2.0.](license.md "License Page")
+Speechlight is licensed under the terms of the [Mozilla Public License, version 2.0.](https://nstockton.github.io/speechlight/license "License Page")
 Speechlight was originally created and is actively maintained by Nick Stockton.
 macOS support by Jacob Schmude.
 
@@ -13,8 +13,13 @@ macOS support by Jacob Schmude.
 ## Installation
 
 ```
-pip install -U git+https://github.com/nstockton/speechlight.git
+pip install --user speechlight
 ```
+
+
+## Documentation
+
+Please see the [API reference](https://nstockton.github.io/speechlight/api "Speechlight API Reference") for more information.
 
 
 ## Example Usage
