@@ -2,9 +2,9 @@ coverage[toml]
 flake8
 flake8-tabs
 isort[pyproject,requirements,pipfile]==4.3.21
-mkdocs
-mkdocs-material
-mkdocstrings
+mkdocs==1.1.2
+mkdocs-material==6.2.3
+mkdocstrings==0.13.6
 mypy
 pre-commit
 git+https://github.com/nstockton/pytkdocs.git@tab-indentation-parser#egg=pytkdocs
