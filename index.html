@@ -238,6 +238,27 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    Documentation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-usage" class="md-nav__link">
+    Example Usage
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -396,6 +417,27 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    Documentation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-usage" class="md-nav__link">
+    Example Usage
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -409,12 +451,38 @@
               
                 
                 
-                <h1 id="speechlight">Speechlight<a class="headerlink" href="#speechlight" title="Permanent link">&para;</a></h1>
+                <h1 id="speechlight">speechlight<a class="headerlink" href="#speechlight" title="Permanent link">&para;</a></h1>
 <p>A lightweight Python library providing a common interface to multiple TTS and screen reader APIs.</p>
 <h2 id="license-and-credits">License And Credits<a class="headerlink" href="#license-and-credits" title="Permanent link">&para;</a></h2>
 <p>Speechlight is licensed under the terms of the <a href="license/" title="License Page">Mozilla Public License, version 2.0.</a>
 Speechlight was originally created and is actively maintained by Nick Stockton.
 macOS support by Jacob Schmude.</p>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>pip install --user speechlight
+</code></pre></div>
+<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
+<p>Please see the <a href="https://nstockton.github.io/speechlight/api" title="Speechlight API Reference">API reference</a> for more information.</p>
+<h2 id="example-usage">Example Usage<a class="headerlink" href="#example-usage" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>from speechlight import speech
+
+# Say something.
+speech.say(&quot;Hello world!&quot;)
+
+# Say something else, interrupting the currently speaking text.
+speech.say(&quot;I&#39;m a rood computer!&quot;, interrupt=True)
+
+# Cancel the currently speaking message.
+speech.silence()
+
+# Braille something.
+speech.braille(&quot;Braille dots go bump in the night.&quot;)
+
+# Speak and braille text at the same time.
+speech.output(&quot;Read along with me.&quot;)
+
+# And to interrupt speech.
+speech.output(&quot;Rood!&quot;, interrupt=True)
+</code></pre></div>
                 
               
               
