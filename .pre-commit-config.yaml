@@ -1,0 +1,42 @@
+repos:
+  - repo: local
+    hooks:
+      - id: unittest
+        name: UnitTest
+        stages: [commit]
+        language: system
+        entry: "python -B -m coverage run -m unittest"
+        types: [python]
+        pass_filenames: false
+      - id: isort
+        name: ISort
+        stages: [commit]
+        language: system
+        entry: "python -B -W ignore -m isort"
+        types: [python]
+      - id: tan
+        name: Tan
+        stages: [commit]
+        language: system
+        entry: "python -B -m black"
+        types: [python]
+      - id: flake8
+        name: Flake8
+        stages: [commit]
+        language: system
+        entry: "python -B -m flake8"
+        types: [python]
+      - id: mypy
+        name: MyPy
+        stages: [commit]
+        language: system
+        entry: "python -B -m mypy"
+        types: [python]
+        pass_filenames: false
+      - id: coverage
+        name: Coverage
+        stages: [push]
+        language: system
+        entry: "python -B -m coverage report"
+        types: [python]
+        pass_filenames: false

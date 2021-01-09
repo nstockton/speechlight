@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+coverage = {extras = ["toml"], version = "*"}
+flake8 = "*"
+flake8-tabs = "*"
+isort = {extras = ["pipfile", "pyproject", "requirements"], version = "==4.3.21"}
+mkdocs = "*"
+mkdocs-material = "*"
+mkdocstrings = "*"
+mypy = "*"
+pre-commit = "*"
+pytkdocs = {git = "https://github.com/nstockton/pytkdocs.git", ref = "tab-indentation-parser"}
+tan = {git = "https://github.com/nstockton/tan.git"}
+
+[packages]
+pywin32 = "*"

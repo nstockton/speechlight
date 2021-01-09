@@ -1,0 +1,11 @@
+coverage[toml]
+flake8
+flake8-tabs
+isort[pyproject,requirements,pipfile]==4.3.21
+mkdocs
+mkdocs-material
+mkdocstrings
+mypy
+pre-commit
+git+https://github.com/nstockton/pytkdocs.git@tab-indentation-parser#egg=pytkdocs
+git+https://github.com/nstockton/tan.git#egg=tan

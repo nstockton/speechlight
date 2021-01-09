@@ -1,0 +1,52 @@
+[tool.black]
+	use-tabs = true
+	safe = true
+	line-length = 110
+	target-version = ["py37", "py38"]
+	exclude = '(/(\.eggs|\.git|\.mypy_cache|\.tox|\.venv|build|dist)|__pycache__)'
+	include = '/((speechlight|tests).*\.py|com_server.py|setup.py)$'
+
+[tool.coverage.report]
+	precision = 0
+	fail_under = 40.0
+	show_missing = true
+	skip_covered = true
+	sort = "Cover"
+	exclude_lines = [
+		"pragma: no cover",
+		"raise AssertionError",
+		"raise NotImplementedError",
+		"def __repr__",
+		"def __str__",
+		"if __name__ == .__main__.:",
+	]
+
+[tool.coverage.run]
+	source = ["speechlight"]
+	omit = [
+		"speechlight/speech_libs/*",
+	]
+
+[tool.isort]
+	multi_line_output = 3
+	include_trailing_comma = true
+	force_grid_wrap = 0
+	use_parentheses = true
+	line_length = 110
+	force_adds = false
+	from_first = false
+	combine_as_imports = false
+	order_by_type = true
+	known_future_library = ["future"]
+	known_standard_library = ["_imp"]
+	known_third_party = ["setuptools", "pywin32", "win32com", "pywintypes", "Cocoa"]
+	known_first_party = ["speechlight"]
+	add_imports = ["from __future__ import annotations"]
+	reverse_relative = true
+	indent = "tab"
+	lines_after_imports = 2
+	import_heading_future = "Future Modules:"
+	import_heading_stdlib = "Built-in Modules:"
+	import_heading_thirdparty = "Third-party Modules:"
+	import_heading_firstparty = "Speechlight Modules:"
+	import_heading_localfolder = "Local Modules:"

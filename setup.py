@@ -3,15 +3,26 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 
-# Third-party Modules:
-from setuptools import setup, find_packages
+# Future Modules:
+from __future__ import annotations
 
 # Built-in Modules:
 import platform
+from typing import List
+
+# Third-party Modules:
+from setuptools import find_packages, setup
 
 
-VERSION = "1.1"
-REQUIREMENTS = []
+NAME: str = "Speechlight"
+DESCRIPTION: str = (
+	"A lightweight Python library providing a common interface to multiple TTS and screen reader APIs."
+)
+AUTHOR: str = "Nick Stockton"
+AUTHOR_EMAIL: str = "nstockton@gmail.com"
+VERSION: str = "1.2"
+URL: str = "https://github.com/nstockton/speechlight"
+REQUIREMENTS: List[str] = []
 
 
 if platform.system() == "Windows":
@@ -19,13 +30,13 @@ if platform.system() == "Windows":
 
 
 setup(
-	name="speechlight",
-	author="Nick Stockton",
-	author_email="nstockton@gmail.com",
+	name=NAME,
+	author=AUTHOR,
+	author_email=AUTHOR_EMAIL,
 	version=VERSION,
-	description="A lightweight Python library providing a common interface to multiple TTS and screen reader APIs",
+	description=DESCRIPTION,
 	scripts=[],
-	url="https://github.com/nstockton/speechlight",
+	url=URL,
 	package_dir={"speechlight": "speechlight"},
 	packages=find_packages(),
 	package_data={"speechlight.speech_libs": ["*.dll"]},
@@ -43,5 +54,5 @@ setup(
 		"Programming Language :: Python",
 		"Topic :: Adaptive Technologies",
 		"Topic :: Software Development :: Libraries",
-	]
+	],
 )
