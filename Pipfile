@@ -8,9 +8,9 @@ coverage = {extras = ["toml"], version = "*"}
 flake8 = "*"
 flake8-tabs = "*"
 isort = {extras = ["pipfile", "pyproject", "requirements"], version = "==4.3.21"}
-mkdocs = "*"
-mkdocs-material = "*"
-mkdocstrings = "*"
+mkdocs = {version = "==1.1.2"}
+mkdocs-material = {version = "==6.2.3"}
+mkdocstrings = {version = "==0.13.6"}
 mypy = "*"
 pre-commit = "*"
 pytkdocs = {git = "https://github.com/nstockton/pytkdocs.git", ref = "tab-indentation-parser"}
