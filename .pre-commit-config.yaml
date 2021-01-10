@@ -1,4 +1,14 @@
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+      - id: check-case-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: fix-byte-order-marker
+      - id: name-tests-test
+        args: ['--django']
+      - id: requirements-txt-fixer
   - repo: local
     hooks:
       - id: unittest
@@ -12,7 +22,7 @@ repos:
         name: ISort
         stages: [commit]
         language: system
-        entry: "python -B -W ignore -m isort"
+        entry: "python -B -m isort"
         types: [python]
       - id: tan
         name: Tan
