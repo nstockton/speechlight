@@ -15,7 +15,7 @@ SYSTEM_PLATFORM: str = platform.system()
 
 
 if SYSTEM_PLATFORM == "Windows":
-	from speechlight.windows import SPF_ASYNC, SPF_PURGEBEFORESPEAK, SPF_IS_NOT_XML, Speech
+	from speechlight.windows import SPF_ASYNC, SPF_IS_NOT_XML, SPF_PURGEBEFORESPEAK, Speech
 
 
 @skipUnless(SYSTEM_PLATFORM == "Windows", "only runs on Windows")

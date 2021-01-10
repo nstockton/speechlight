@@ -28,25 +28,35 @@
 	]
 
 [tool.isort]
-	multi_line_output = 3
-	include_trailing_comma = true
-	force_grid_wrap = 0
-	use_parentheses = true
-	line_length = 110
-	force_adds = false
-	from_first = false
-	combine_as_imports = false
-	order_by_type = true
-	known_future_library = ["future"]
-	known_standard_library = ["_imp"]
-	known_third_party = ["setuptools", "pywin32", "win32com", "pywintypes", "Cocoa"]
-	known_first_party = ["speechlight"]
-	add_imports = ["from __future__ import annotations"]
-	reverse_relative = true
-	indent = "tab"
-	lines_after_imports = 2
+	line_length = 110  # The max length of an import line (used for wrapping long imports).
+	supported_extensions = ["pxd", "py", "pyi", "pyx"]  # Specify what extensions isort can be ran against.
+	indent = "tab"  # String to place for indents.
+	multi_line_output = 3  # Vertical hanging indent for long sections of multiple imports.
+	include_trailing_comma = true  # Include a trailing comma on multi line imports that include parentheses.
+	force_grid_wrap = 0  # Only consider line length when forcing lines to be grid wrapped.
+	use_parentheses = true  # Use parentheses for line continuation on length limit instead of slashes.
+	ensure_newline_before_comments = true  # Insert a blank line before a comment following an import.
+	indented_import_headings = false  # Do not include import headings inside indented imports.
+	float_to_top = true  # Float all non-indented imports to the top of the file.
+	lines_after_imports = 2  # Add this many lines after imports / before code begins.
+	force_adds = false  # Do not force import adds if the original file is empty.
+	from_first = false  # Show from imports after straight ones.
+	combine_as_imports = false  # Combine as imports on the same line.
+	order_by_type = true  # Order imports by type, which is determined by case, in addition to alphabetically.
+	reverse_relative = true  # Reverse order of relative imports.
+	add_imports = ["from __future__ import annotations"]  # Add the specified import lines to all files.
+	default_section = "STDLIB"  # Set the default section for imports.
+	# The heading to display for future imports.
 	import_heading_future = "Future Modules:"
+	# The heading to display for standard library imports.
 	import_heading_stdlib = "Built-in Modules:"
+	# The heading to display for third-party imports.
 	import_heading_thirdparty = "Third-party Modules:"
+	# Override known third-party imports.
+	known_third_party = ["setuptools", "pywin32", "win32com", "pywintypes", "Cocoa"]
+	# The heading to display for first-party imports.
 	import_heading_firstparty = "Speechlight Modules:"
+	# Override known first-party imports.
+	known_first_party = ["speechlight"]
+	# The heading to display for local imports.
 	import_heading_localfolder = "Local Modules:"
