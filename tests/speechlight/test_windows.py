@@ -277,7 +277,10 @@ class TestWindows(TestCase):
 	@mock.patch("speechlight.windows.Speech.sa_running", return_value=False)
 	@mock.patch("speechlight.windows.Speech.nvda_running", return_value=False)
 	def test_speaking(
-		self, mock_nvda_running: mock.Mock, mock_sa_running: mock.Mock, mock_jfw_running: mock.Mock,
+		self,
+		mock_nvda_running: mock.Mock,
+		mock_sa_running: mock.Mock,
+		mock_jfw_running: mock.Mock,
 	) -> None:
 		with mock.patch("speechlight.windows.Speech.sapi", mock.PropertyMock()) as mock_sapi:
 			mock_nvda_running.return_value = True
