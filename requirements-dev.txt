@@ -8,5 +8,5 @@ mkdocstrings==0.13.6
 mypy
 pre-commit
 git+https://github.com/nstockton/pytkdocs.git@tab-indentation-parser#egg=pytkdocs
-git+https://github.com/nstockton/tan.git#egg=tan
+git+https://github.com/nstockton/tan.git@personal#egg=tan
 twine
