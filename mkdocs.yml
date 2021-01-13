@@ -43,6 +43,8 @@ markdown_extensions:
   - codehilite:
       guess_lang: false
       linenums: false
+  - pymdownx.snippets:
+      base_path: docs
   - pymdownx.superfences
   - pymdownx.tasklist
   - pymdownx.tabbed
