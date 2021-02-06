@@ -996,7 +996,7 @@
 <span class="sd">		speak: Output text using speech.</span>
 <span class="sd">		interrupt: True if the speech should be silenced before speaking.</span>
 <span class="sd">	"""</span>
-	<span class="n">jfw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">CDispatch</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jfw</span>
+	<span class="n">jfw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">CDispatch</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jfw</span>  <span class="c1"># type: ignore[no-any-unimported]</span>
 	<span class="k">if</span> <span class="n">jfw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 		<span class="k">if</span> <span class="n">speak</span><span class="p">:</span>
 			<span class="n">jfw</span><span class="o">.</span><span class="n">SayString</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">interrupt</span><span class="p">)))</span>
@@ -1118,7 +1118,7 @@
           <div class="highlight">
 <pre><span></span><code><span class="k">def</span> <span class="nf">jfw_silence</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 	<span class="sd">"""Cancels JFW speech and flushes the speech buffer."""</span>
-	<span class="n">jfw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">CDispatch</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jfw</span>
+	<span class="n">jfw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">CDispatch</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jfw</span>  <span class="c1"># type: ignore[no-any-unimported]</span>
 	<span class="k">if</span> <span class="n">jfw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 		<span class="n">jfw</span><span class="o">.</span><span class="n">StopSpeech</span><span class="p">()</span>
 </code></pre>
@@ -1264,7 +1264,7 @@
 <span class="sd">	Returns:</span>
 <span class="sd">		True if NVDA is running, False otherwise.</span>
 <span class="sd">	"""</span>
-	<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nvda</span><span class="o">.</span><span class="n">nvdaController_testIfRunning</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
+	<span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nvda</span><span class="o">.</span><span class="n">nvdaController_testIfRunning</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
 </code></pre>
 </div>
 </details>
@@ -1540,7 +1540,7 @@
 <span class="sd">	Returns:</span>
 <span class="sd">		True if System Access is running, False otherwise.</span>
 <span class="sd">	"""</span>
-	<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sa</span><span class="o">.</span><span class="n">SA_IsRunning</span><span class="p">()</span>
+	<span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sa</span><span class="o">.</span><span class="n">SA_IsRunning</span><span class="p">())</span>
 </code></pre>
 </div>
 </details>
@@ -1818,7 +1818,7 @@
 		<span class="c1"># None of the screen reader APIs support retrieving speaking status.</span>
 		<span class="k">return</span> <span class="kc">False</span>
 	<span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sapi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sapi</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">RunningState</span> <span class="o">!=</span> <span class="mi">1</span>
+		<span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sapi</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">RunningState</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span>
 	<span class="k">return</span> <span class="kc">False</span>
 </code></pre>
 </div>
