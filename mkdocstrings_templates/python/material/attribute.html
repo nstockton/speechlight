@@ -1,6 +1,8 @@
+{{ log.debug() }}
 {% if config.show_if_no_docstring or attribute.has_contents %}
 
   <div class="doc doc-object doc-attribute">
+  {% with html_id = attribute.path %}
 
     {% if not root or config.show_root_heading %}
 
@@ -15,15 +17,14 @@
       {% endif %}
 
       <h{{ heading_level }}
-          id="{{ attribute.path }}"
+          id="{{ html_id }}"
           class="doc doc-heading"
           data-toc-label="{{ attribute.name }}">
 
-        <span class="doc doc-types"><small class="doc doc-type doc-type-attribute"><code>Attribute</code></small></span>
-
-        <code class="highlight">{% if show_full_path %}{{ attribute.path }}{% else %}{{ attribute.name }}{% endif %}
-          {% if attribute.type %}: {{ attribute.type|highlight(language="python", inline=True)|safe }}{% endif %}
-        </code>
+        {% filter highlight(language="python", inline=True) %}
+          Attribute {% if show_full_path %}{{ attribute.path }}{% else %}{{ attribute.name }}{% endif %}
+          {% if attribute.type %}: {{ attribute.type }}{% endif %}
+        {% endfilter %}
 
         {% with properties = attribute.properties %}
           {% include "properties.html" with context %}
@@ -34,10 +35,9 @@
     {% else %}
       {% if config.show_root_toc_entry %}
         <h{{ heading_level }} class="hidden-toc"
-            href="#{{ attribute.path }}"
-            id="{{ attribute.path }}"
+            id="{{ html_id }}"
             data-toc-label="{{ attribute.path }}"
-            style="visibility: hidden; width: 0; height: 0;">
+            style="visibility: hidden; position: absolute;">
         </h{{ heading_level }}>
       {% endif %}
       {% set heading_level = heading_level - 1 %}
@@ -49,6 +49,7 @@
       {% endwith %}
     </div>
 
+  {% endwith %}
   </div>
 
 {% endif %}

@@ -1,6 +1,8 @@
+{{ log.debug() }}
 {% if config.show_if_no_docstring or function.has_contents %}
 
   <div class="doc doc-object doc-function">
+  {% with html_id = function.path %}
 
     {% if not root or config.show_root_heading %}
 
@@ -15,17 +17,14 @@
       {% endif %}
 
       <h{{ heading_level }}
-          id="{{ function.path }}"
+          id="{{ html_id }}"
           class="doc doc-heading"
           data-toc-label="{{ function.name }}()">
 
-        <span class="doc doc-types"><small class="doc doc-type doc-type-function"><code>Function</code></small></span>
-
-        <code class="highlight language-python">{% if show_full_path %}{{ function.path }}{% else %}{{ function.name }}{% endif %}
-          {% filter highlight(language="python", inline=True) %}
-            {% with signature = function.signature %}{% include "signature.html" with context %}{% endwith %}
-          {% endfilter %}
-        </code>
+        {% filter highlight(language="python", inline=True) %}
+          Function {% if show_full_path %}{{ function.path }}{% else %}{{ function.name }}{% endif %}
+          {% with signature = function.signature %}{% include "signature.html" with context %}{% endwith %}
+        {% endfilter %}
 
         {% with properties = function.properties %}
           {% include "properties.html" with context %}
@@ -36,10 +35,9 @@
     {% else %}
       {% if config.show_root_toc_entry %}
         <h{{ heading_level }} class="hidden-toc"
-            href="#{{ function.path }}"
-            id="{{ function.path }}"
+            id="{{ html_id }}"
             data-toc-label="{{ function.path }}"
-            style="visibility: hidden; width: 0; height: 0;">
+            style="visibility: hidden; position: absolute;">
         </h{{ heading_level }}>
       {% endif %}
       {% set heading_level = heading_level - 1 %}
@@ -58,6 +56,7 @@
       {% endif %}
     </div>
 
+  {% endwith %}
   </div>
 
 {% endif %}

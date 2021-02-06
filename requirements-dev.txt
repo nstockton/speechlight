@@ -3,8 +3,9 @@ flake8
 flake8-tabs
 isort==5.7.0
 mkdocs==1.1.2
-mkdocs-material==6.2.3
-mkdocstrings==0.13.6
+mkdocs-material==6.2.7
+mkdocs-material-extensions==1.0.1
+mkdocstrings==0.14.0
 mypy
 pre-commit
 git+https://github.com/nstockton/pytkdocs.git@tab-indentation-parser#egg=pytkdocs
