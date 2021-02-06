@@ -12,7 +12,7 @@ import platform
 from typing import List
 
 # Third-party Modules:
-from setuptools import setup
+from setuptools import setup  # type: ignore[import]
 
 
 NAME: str = "Speechlight"

@@ -23,7 +23,7 @@ def get_freezer() -> Union[str, None]:
 	Returns:
 		The name of the library or None.
 	"""
-	frozen = getattr(sys, "frozen", None)
+	frozen: Union[str, bool, None] = getattr(sys, "frozen", None)
 	if frozen and hasattr(sys, "_MEIPASS"):
 		return "pyinstaller"
 	elif frozen is True:
@@ -36,7 +36,9 @@ def get_freezer() -> Union[str, None]:
 		return "old_py2exe"
 	elif _imp.is_frozen("__main__"):
 		return "tools/freeze"
-	return frozen
+	elif isinstance(frozen, str):
+		return f"unknown {frozen}"
+	return None
 
 
 def is_frozen() -> bool:

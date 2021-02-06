@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import Optional
 
 # Third-party Modules:
-from Cocoa import NSSpeechSynthesizer
+from Cocoa import NSSpeechSynthesizer  # type: ignore[import]
 
 # Local Modules:
 from .base import BaseSpeech
@@ -37,4 +37,4 @@ class Speech(BaseSpeech):
 		self.darwin.stopSpeaking()
 
 	def speaking(self) -> bool:
-		return self.darwin.isSpeaking()
+		return bool(self.darwin.isSpeaking())

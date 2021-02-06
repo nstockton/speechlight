@@ -9,16 +9,18 @@ from __future__ import annotations
 # Built-in Modules:
 import os
 import sys
-from unittest import TestCase, mock
+from typing import Tuple
+from unittest import TestCase
+from unittest.mock import Mock, patch
 
 # Speechlight Modules:
 from speechlight import utils
 
 
 class TestUtils(TestCase):
-	@mock.patch("speechlight.utils._imp")
-	@mock.patch("speechlight.utils.sys")
-	def test_get_freezer(self, mock_sys, mock_imp):
+	@patch("speechlight.utils._imp")
+	@patch("speechlight.utils.sys")
+	def test_get_freezer(self, mock_sys: Mock, mock_imp: Mock) -> None:
 		del mock_sys.frozen
 		del mock_sys._MEIPASS
 		del mock_sys.importers
@@ -36,20 +38,22 @@ class TestUtils(TestCase):
 		self.assertEqual(utils.get_freezer(), "py2app")
 		mock_sys.frozen = True
 		self.assertEqual(utils.get_freezer(), "cx_freeze")
+		mock_sys.frozen = "some undefined freezer"
+		self.assertEqual(utils.get_freezer(), "unknown some undefined freezer")
 		mock_sys._MEIPASS = "."
 		self.assertEqual(utils.get_freezer(), "pyinstaller")
 
-	def test_is_frozen(self):
+	def test_is_frozen(self) -> None:
 		self.assertIs(utils.is_frozen(), False)
 
-	@mock.patch("speechlight.utils.is_frozen")
-	def test_get_directory_path(self, mock_is_frozen):
-		subdirectory = ("level1", "level2")
-		frozen_dir_name = os.path.dirname(sys.executable)
-		frozen_output = os.path.realpath(os.path.join(frozen_dir_name, *subdirectory))
+	@patch("speechlight.utils.is_frozen")
+	def test_getDirectoryPath(self, mock_is_frozen: Mock) -> None:
+		subdirectory: Tuple[str, ...] = ("level1", "level2")
+		frozen_dir_name: str = os.path.dirname(sys.executable)
+		frozen_output: str = os.path.realpath(os.path.join(frozen_dir_name, *subdirectory))
 		mock_is_frozen.return_value = True
 		self.assertEqual(utils.get_directory_path(*subdirectory), frozen_output)
-		unfrozen_dir_name = os.path.join(os.path.dirname(utils.__file__))
-		unfrozen_output = os.path.realpath(os.path.join(unfrozen_dir_name, *subdirectory))
+		unfrozen_dir_name: str = os.path.dirname(utils.__file__)
+		unfrozen_output: str = os.path.realpath(os.path.join(unfrozen_dir_name, *subdirectory))
 		mock_is_frozen.return_value = False
 		self.assertEqual(utils.get_directory_path(*subdirectory), unfrozen_output)

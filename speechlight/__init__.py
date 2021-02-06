@@ -30,4 +30,4 @@ else:  # pragma: no cover
 		from .dummy import Speech
 
 speech: Speech = Speech()
-__all__: List[str] = ["speech"]
+__all__: List[str] = ["Speech", "speech"]

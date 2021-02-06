@@ -12,8 +12,8 @@ import os
 from typing import Optional, Union
 
 # Third-party Modules:
-import win32com.client
-from pywintypes import com_error as ComError
+import win32com.client  # type: ignore[import]
+from pywintypes import com_error as ComError  # type: ignore[import]
 
 # Local Modules:
 from . import LIB_DIRECTORY, SYSTEM_ARCHITECTURE
@@ -45,7 +45,9 @@ class Speech(BaseSpeech):
 		self.sa.SA_SayW.argtypes = (ctypes.c_wchar_p,)
 
 	@property
-	def sapi(self) -> Union[win32com.client.CDispatch, None]:  # pragma: no cover
+	def sapi(  # type: ignore[misc, no-any-unimported]
+		self,
+	) -> Union[win32com.client.CDispatch, None]:  # pragma: no cover
 		"""The SAPI COM object."""
 		try:
 			return win32com.client.Dispatch("SAPI.SpVoice")
@@ -53,7 +55,9 @@ class Speech(BaseSpeech):
 			return None
 
 	@property
-	def jfw(self) -> Union[win32com.client.CDispatch, None]:  # pragma: no cover
+	def jfw(  # type: ignore[misc, no-any-unimported]
+		self,
+	) -> Union[win32com.client.CDispatch, None]:  # pragma: no cover
 		"""The JFW COM object."""
 		try:
 			return win32com.client.Dispatch("FreedomSci.JawsApi")
@@ -85,7 +89,7 @@ class Speech(BaseSpeech):
 			speak: Output text using speech.
 			interrupt: True if the speech should be silenced before speaking.
 		"""
-		jfw: Union[win32com.client.CDispatch, None] = self.jfw
+		jfw: Union[win32com.client.CDispatch, None] = self.jfw  # type: ignore[no-any-unimported]
 		if jfw is not None:
 			if speak:
 				jfw.SayString(text, int(bool(interrupt)))
@@ -113,7 +117,7 @@ class Speech(BaseSpeech):
 
 	def jfw_silence(self) -> None:
 		"""Cancels JFW speech and flushes the speech buffer."""
-		jfw: Union[win32com.client.CDispatch, None] = self.jfw
+		jfw: Union[win32com.client.CDispatch, None] = self.jfw  # type: ignore[no-any-unimported]
 		if jfw is not None:
 			jfw.StopSpeech()
 
@@ -144,7 +148,7 @@ class Speech(BaseSpeech):
 		Returns:
 			True if NVDA is running, False otherwise.
 		"""
-		return self.nvda.nvdaController_testIfRunning() == 0
+		return bool(self.nvda.nvdaController_testIfRunning() == 0)
 
 	def nvda_say(self, text: str, interrupt: Optional[bool] = None) -> None:
 		"""
@@ -189,7 +193,7 @@ class Speech(BaseSpeech):
 		Returns:
 			True if System Access is running, False otherwise.
 		"""
-		return self.sa.SA_IsRunning()
+		return bool(self.sa.SA_IsRunning())
 
 	def sa_say(self, text: str, interrupt: Optional[bool] = None) -> None:
 		"""
@@ -269,5 +273,5 @@ class Speech(BaseSpeech):
 			# None of the screen reader APIs support retrieving speaking status.
 			return False
 		elif self.sapi is not None:
-			return self.sapi.Status.RunningState != 1
+			return bool(self.sapi.Status.RunningState != 1)
 		return False
