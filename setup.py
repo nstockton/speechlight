@@ -20,7 +20,7 @@ DESCRIPTION: str = (
 	"A lightweight Python library providing a common interface to multiple TTS and screen reader APIs."
 )
 AUTHOR: str = "Nick Stockton"
-VERSION: str = "1.2"
+VERSION: str = "1.3"
 URL: str = "https://github.com/nstockton/speechlight"
 # The directory containing this file
 HERE: pathlib.Path = pathlib.Path(__file__).parent
