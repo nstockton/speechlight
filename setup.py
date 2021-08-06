@@ -24,7 +24,7 @@ NAME: str = "Speechlight"
 DESCRIPTION: str = (
 	"A lightweight Python library providing a common interface to multiple TTS and screen reader APIs."
 )
-KEYWORDS: str = "mud telnet protocol"
+KEYWORDS: str = "blind jaws jfw nvda speech tts screenreader screen reader"
 AUTHOR: str = "Nick Stockton"
 VERSION: str = "1.4"
 URL: str = "https://github.com/nstockton/speechlight"
