@@ -2,7 +2,7 @@
 	use-tabs = true
 	safe = true
 	line-length = 110
-	target-version = ["py37", "py38"]
+	target-version = ["py37", "py38", "py39"]
 	exclude = '(/(\.eggs|\.git|\.mypy_cache|\.tox|\.venv|build|dist)|__pycache__)'
 	include = '/((speechlight|tests).*\.py|com_server.py|setup.py)$'
 
