@@ -4,6 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+build = "*"
 coverage = {extras = ["toml"], version = "*"}
 flake8 = "*"
 flake8-tabs = {version = "==2.2.2"}
