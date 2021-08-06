@@ -8,16 +8,10 @@ from __future__ import annotations
 
 # Built-in Modules:
 import pathlib
-import platform
-import sys
 from typing import List
 
 # Third-party Modules:
 from setuptools import setup  # type: ignore[import]
-
-
-if sys.version_info < (3, 7):
-	raise NotImplementedError("Only Python 3.7+ is supported.")
 
 
 NAME: str = "Speechlight"
@@ -27,16 +21,14 @@ DESCRIPTION: str = (
 KEYWORDS: str = "blind jaws jfw nvda speech tts screenreader screen reader"
 AUTHOR: str = "Nick Stockton"
 AUTHOR_EMAIL: str = "nstockton@users.noreply.github.com"
-VERSION: str = "1.4"
+VERSION: str = "1.5"
 URL: str = "https://github.com/nstockton/speechlight"
 # The directory containing this file
 HERE: pathlib.Path = pathlib.Path(__file__).parent
 README: str = (HERE / "README.md").read_text()
-REQUIREMENTS: List[str] = []
-
-
-if platform.system() == "Windows":
-	REQUIREMENTS.append("pywin32")
+REQUIREMENTS: List[str] = [
+	"pywin32 ; platform_system=='Windows'",
+]
 
 
 setup(
