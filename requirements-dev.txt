@@ -1,6 +1,6 @@
 coverage[toml]
 flake8
-flake8-tabs
+flake8-tabs==2.2.2
 isort==5.7.0
 mkdocs==1.1.2
 mkdocs-material==6.2.7

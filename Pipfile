@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 coverage = {extras = ["toml"], version = "*"}
 flake8 = "*"
-flake8-tabs = "*"
+flake8-tabs = {version = "==2.2.2"}
 isort = {version = "==5.7.0"}
 mkdocs = {version = "==1.1.2"}
 mkdocs-material = {version = "==6.2.7"}
