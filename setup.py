@@ -26,6 +26,7 @@ DESCRIPTION: str = (
 )
 KEYWORDS: str = "blind jaws jfw nvda speech tts screenreader screen reader"
 AUTHOR: str = "Nick Stockton"
+AUTHOR_EMAIL: str = "nstockton@users.noreply.github.com"
 VERSION: str = "1.4"
 URL: str = "https://github.com/nstockton/speechlight"
 # The directory containing this file
@@ -43,6 +44,7 @@ setup(
 	name=NAME,
 	keywords=KEYWORDS,
 	author=AUTHOR,
+	author_email=AUTHOR_EMAIL,
 	version=VERSION,
 	description=DESCRIPTION,
 	long_description=README,
