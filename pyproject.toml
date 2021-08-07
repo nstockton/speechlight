@@ -11,7 +11,7 @@
 	line-length = 110
 	target-version = ["py37", "py38", "py39"]
 	exclude = '(/(\.eggs|\.git|\.mypy_cache|\.tox|\.venv|build|dist)|__pycache__)'
-	include = '/((speechlight|tests).*\.py|com_server.py|setup.py)$'
+	include = '/((speechlight|tests).*\.py|com_server\.py|setup\.py)$'
 
 [tool.coverage.report]
 	precision = 0
@@ -67,3 +67,17 @@
 	known_first_party = ["speechlight"]
 	# The heading to display for local imports.
 	import_heading_localfolder = "Local Modules:"
+
+[tool.mypy]
+	files = ["speechlight", "tests", "com_server.py", "setup.py"]
+	local_partial_types = true
+	strict = true
+	disallow_any_unimported = true
+	disallow_any_decorated = true
+	warn_unreachable = true
+	show_error_codes = true
+	no_color_output = true
+
+[[tool.mypy.overrides]]
+	module = "tests.*"
+	disallow_any_decorated = false
