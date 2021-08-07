@@ -34,9 +34,15 @@ ignore =
 exclude =
 	.git,
 	__pycache__,
+	.env,
+	.venv,
+	env,
+	venv,
+	env.bak,
+	venv.bak,
+	ENV,
 
 filename =
 	*.py,
-	*.pyw,
 	*.pys,
-	*.spec,
+	*.pyw,

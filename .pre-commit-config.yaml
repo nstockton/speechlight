@@ -23,6 +23,7 @@ repos:
     hooks:
       - id: unittest
         name: UnitTest
+        args: ['--failfast']
         stages: [commit]
         language: system
         entry: "python -B -m coverage run -m unittest"
