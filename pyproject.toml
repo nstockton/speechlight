@@ -82,3 +82,15 @@
 [[tool.mypy.overrides]]
 	module = "tests.*"
 	disallow_any_decorated = false
+
+[[tool.mypy.overrides]]
+	module = "win32com.*"
+	ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+	module = "pywintypes.*"
+	ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+	module = "Cocoa.*"
+	ignore_missing_imports = true

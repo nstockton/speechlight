@@ -7,18 +7,12 @@
 from __future__ import annotations
 
 # Built-in Modules:
-import platform
-from unittest import TestCase, mock, skipUnless
+from unittest import TestCase, mock
+
+# Speechlight Modules:
+from speechlight.windows import SPF_ASYNC, SPF_IS_NOT_XML, SPF_PURGEBEFORESPEAK, Speech
 
 
-SYSTEM_PLATFORM: str = platform.system()
-
-
-if SYSTEM_PLATFORM == "Windows":
-	from speechlight.windows import SPF_ASYNC, SPF_IS_NOT_XML, SPF_PURGEBEFORESPEAK, Speech
-
-
-@skipUnless(SYSTEM_PLATFORM == "Windows", "only runs on Windows")
 class TestWindows(TestCase):
 	def setUp(self) -> None:
 		self.text: str = "This is a test."

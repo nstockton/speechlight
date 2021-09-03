@@ -9,15 +9,17 @@ from __future__ import annotations
 # Built-in Modules:
 import ctypes
 import os
-from typing import Optional, Union
-
-# Third-party Modules:
-import win32com.client  # type: ignore[import]
-from pywintypes import com_error as ComError  # type: ignore[import]
+import sys
+from typing import Any, Callable, Optional
 
 # Local Modules:
 from . import LIB_DIRECTORY, SYSTEM_ARCHITECTURE
 from .base import BaseSpeech
+
+
+if sys.platform == "win32":  # pragma: no cover
+	import win32com.client
+	from pywintypes import com_error as ComError
 
 
 # SAPI constants
@@ -26,43 +28,80 @@ SPF_PURGEBEFORESPEAK: int = 2  # Purges all pending speak requests prior to this
 SPF_IS_NOT_XML: int = 16  # The input text will not be parsed for XML markup.
 
 
+class MockNVDA(object):  # pragma: no cover
+	def nvdaController_brailleMessage(self, text: str) -> None:
+		pass
+
+	def nvdaController_speakText(self, text: str) -> None:
+		pass
+
+	def nvdaController_cancelSpeech(self) -> None:
+		pass
+
+	def nvdaController_testIfRunning(self) -> int:
+		return -1
+
+
+class MockSA(object):  # pragma: no cover
+	def SA_BrlShowTextW(self, text: str) -> None:
+		pass
+
+	def SA_SayW(self, text: str) -> None:
+		pass
+
+	def SA_StopAudio(self) -> None:
+		pass
+
+	def SA_IsRunning(self) -> int:
+		return 0
+
+
 class Speech(BaseSpeech):
-	def __init__(self) -> None:
-		self.find_window: ctypes._NamedFuncPointer = ctypes.WinDLL("user32").FindWindowW
-		self.find_window.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p]
-		self.find_window.restype = ctypes.c_void_p
-		self.nvda: ctypes.WinDLL
-		self.sa: ctypes.WinDLL
-		if SYSTEM_ARCHITECTURE == "32bit":
-			self.nvda = ctypes.windll.LoadLibrary(os.path.join(LIB_DIRECTORY, "nvdaControllerClient32.dll"))
-			self.sa = ctypes.windll.LoadLibrary(os.path.join(LIB_DIRECTORY, "SAAPI32.dll"))
-		else:  # pragma: no cover
-			self.nvda = ctypes.windll.LoadLibrary(os.path.join(LIB_DIRECTORY, "nvdaControllerClient64.dll"))
-			self.sa = ctypes.windll.LoadLibrary(os.path.join(LIB_DIRECTORY, "SAAPI64.dll"))
-		self.nvda.nvdaController_brailleMessage.argtypes = (ctypes.c_wchar_p,)
-		self.nvda.nvdaController_speakText.argtypes = (ctypes.c_wchar_p,)
-		self.sa.SA_BrlShowTextW.argtypes = (ctypes.c_wchar_p,)
-		self.sa.SA_SayW.argtypes = (ctypes.c_wchar_p,)
+	def __init__(self) -> None:  # pragma: no cover
+		if sys.platform == "win32":
+			self.find_window: ctypes._NamedFuncPointer = ctypes.WinDLL("user32").FindWindowW
+			self.find_window.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p]
+			self.find_window.restype = ctypes.c_void_p
+			self.nvda: ctypes.WinDLL
+			self.sa: ctypes.WinDLL
+			if SYSTEM_ARCHITECTURE == "32bit":
+				self.nvda = ctypes.windll.LoadLibrary(
+					os.path.join(LIB_DIRECTORY, "nvdaControllerClient32.dll")
+				)
+				self.sa = ctypes.windll.LoadLibrary(os.path.join(LIB_DIRECTORY, "SAAPI32.dll"))
+			else:
+				self.nvda = ctypes.windll.LoadLibrary(
+					os.path.join(LIB_DIRECTORY, "nvdaControllerClient64.dll")
+				)
+				self.sa = ctypes.windll.LoadLibrary(os.path.join(LIB_DIRECTORY, "SAAPI64.dll"))
+			self.nvda.nvdaController_brailleMessage.argtypes = (ctypes.c_wchar_p,)
+			self.nvda.nvdaController_speakText.argtypes = (ctypes.c_wchar_p,)
+			self.sa.SA_BrlShowTextW.argtypes = (ctypes.c_wchar_p,)
+			self.sa.SA_SayW.argtypes = (ctypes.c_wchar_p,)
+		else:
+			self.find_window: Callable[..., None] = lambda *args: None
+			self.nvda = MockNVDA()
+			self.sa = MockSA()
 
 	@property
-	def sapi(  # type: ignore[misc, no-any-unimported]
-		self,
-	) -> Union[win32com.client.CDispatch, None]:  # pragma: no cover
+	def sapi(self) -> Any:  # type: ignore[misc] # pragma: no cover
 		"""The SAPI COM object."""
-		try:
-			return win32com.client.Dispatch("SAPI.SpVoice")
-		except ComError:
-			return None
+		if sys.platform == "win32":
+			try:
+				return win32com.client.Dispatch("SAPI.SpVoice")
+			except ComError:
+				pass
+		return None
 
 	@property
-	def jfw(  # type: ignore[misc, no-any-unimported]
-		self,
-	) -> Union[win32com.client.CDispatch, None]:  # pragma: no cover
+	def jfw(self) -> Any:  # type: ignore[misc] # pragma: no cover
 		"""The JFW COM object."""
-		try:
-			return win32com.client.Dispatch("FreedomSci.JawsApi")
-		except ComError:
-			return None
+		if sys.platform == "win32":
+			try:
+				return win32com.client.Dispatch("FreedomSci.JawsApi")
+			except ComError:
+				pass
+		return None
 
 	def jfw_braille(self, text: str) -> None:
 		"""
@@ -89,7 +128,7 @@ class Speech(BaseSpeech):
 			speak: Output text using speech.
 			interrupt: True if the speech should be silenced before speaking.
 		"""
-		jfw: Union[win32com.client.CDispatch, None] = self.jfw  # type: ignore[no-any-unimported]
+		jfw = self.jfw
 		if jfw is not None:
 			if speak:
 				jfw.SayString(text, int(bool(interrupt)))
@@ -117,7 +156,7 @@ class Speech(BaseSpeech):
 
 	def jfw_silence(self) -> None:
 		"""Cancels JFW speech and flushes the speech buffer."""
-		jfw: Union[win32com.client.CDispatch, None] = self.jfw  # type: ignore[no-any-unimported]
+		jfw = self.jfw
 		if jfw is not None:
 			jfw.StopSpeech()
 

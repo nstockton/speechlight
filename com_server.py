@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import List
 
 # Third-party Modules:
-import win32com.server.register  # type: ignore[import]
+import win32com.server.register
 
 # Speechlight Modules:
 from speechlight import Speech

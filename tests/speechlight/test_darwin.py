@@ -7,18 +7,12 @@
 from __future__ import annotations
 
 # Built-in Modules:
-import platform
-from unittest import TestCase, mock, skipUnless
+from unittest import TestCase, mock
+
+# Speechlight Modules:
+from speechlight.darwin import Speech
 
 
-SYSTEM_PLATFORM: str = platform.system()
-
-
-if SYSTEM_PLATFORM == "Darwin":
-	from speechlight.darwin import Speech
-
-
-@skipUnless(SYSTEM_PLATFORM == "Darwin", "only runs on macOS")
 class TestDarwin(TestCase):
 	def setUp(self) -> None:
 		self.text: str = "This is a test."

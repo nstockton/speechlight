@@ -7,19 +7,44 @@
 from __future__ import annotations
 
 # Built-in Modules:
+import sys
 from typing import Optional
-
-# Third-party Modules:
-from Cocoa import NSSpeechSynthesizer  # type: ignore[import]
 
 # Local Modules:
 from .base import BaseSpeech
 
 
+if sys.platform == "darwin":  # pragma: no cover
+	from Cocoa import NSSpeechSynthesizer
+
+
+class MockTTS(object):  # pragma: no cover
+	def init(self) -> MockTTS:
+		return self
+
+	def startSpeakingString_(self, text: str) -> None:
+		pass
+
+	def stopSpeaking(self) -> None:
+		pass
+
+	def isSpeaking(self) -> bool:
+		return False
+
+
+class MockNSSpeechSynthesizer(object):  # pragma: no cover
+	@staticmethod
+	def alloc() -> MockTTS:
+		return MockTTS()
+
+
 class Speech(BaseSpeech):
-	def __init__(self) -> None:
-		# Allocate and initialize the default TTS.
-		self.darwin = NSSpeechSynthesizer.alloc().init()
+	def __init__(self) -> None:  # pragma: no cover
+		if sys.platform == "darwin":
+			# Allocate and initialize the default TTS.
+			self.darwin = NSSpeechSynthesizer.alloc().init()
+		else:
+			self.darwin = MockNSSpeechSynthesizer.alloc().init()
 
 	def braille(self, text: str) -> None:
 		pass
