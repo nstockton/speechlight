@@ -15,7 +15,7 @@ repos:
       - id: fix-byte-order-marker
         stages: [commit]
       - id: name-tests-test
-        args: ['--django']
+        args: ["--django"]
         stages: [commit]
       - id: requirements-txt-fixer
         stages: [commit]
@@ -23,7 +23,7 @@ repos:
     hooks:
       - id: unittest
         name: UnitTest
-        args: ['--failfast']
+        args: ["--failfast"]
         stages: [commit]
         language: system
         entry: "python -B -m coverage run -m unittest"
@@ -53,6 +53,13 @@ repos:
         language: system
         entry: "python -B -m mypy"
         types: [python]
+        pass_filenames: false
+      - id: mkdocs
+        name: MKDocs
+        stages: [commit]
+        language: system
+        entry: "python -B -m mkdocs build"
+        types_or: [markdown, python]
         pass_filenames: false
       - id: coverage
         name: Coverage
