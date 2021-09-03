@@ -20,12 +20,12 @@
 	skip_covered = true
 	sort = "Cover"
 	exclude_lines = [
-		"pragma: no cover",
-		"raise AssertionError",
-		"raise NotImplementedError",
-		"def __repr__",
-		"def __str__",
-		"if __name__ == .__main__.:",
+		'''\#\s*pragma: no cover''',
+		'''^\s*raise AssertionError\b''',
+		'''^\s*raise NotImplementedError\b''',
+		'''^\s*def __repr__''',
+		'''^\s*def __str__''',
+		'''^\s*if __name__ == .__main__.:''',
 	]
 
 [tool.coverage.run]
@@ -82,6 +82,10 @@
 [[tool.mypy.overrides]]
 	module = "tests.*"
 	disallow_any_decorated = false
+
+[[tool.mypy.overrides]]
+	module = "setuptools.*"
+	ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 	module = "win32com.*"
