@@ -1,4 +1,4 @@
-name: Python testing
+name: Python Testing
 
 on: [push, pull_request]
 
@@ -32,3 +32,5 @@ jobs:
       run: |
         python -m pre_commit run --all-files --show-diff-on-failure --hook-stage commit
         python -m pre_commit run --all-files --show-diff-on-failure --hook-stage push
+        python -m build
+        python -m twine check dist/*
