@@ -1,0 +1,14 @@
+prune .github
+prune docs
+prune material_theme
+prune mkdocstrings_templates
+prune tests
+exclude .gitattributes
+exclude .gitignore
+exclude com_server.py
+exclude .pre-commit-config.yaml
+exclude MANIFEST.in
+exclude mkdocs.yml
+exclude Pipfile
+exclude requirements.txt
+exclude requirements-dev.txt
