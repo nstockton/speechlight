@@ -8,7 +8,7 @@ build = "*"
 coverage = {extras = ["toml"], version = "*"}
 flake8 = "*"
 flake8-tabs = {version = "==2.2.2"}
-isort = {version = "==5.7.0"}
+isort = {version = "==5.8.0"}
 mkdocs = {version = "==1.2.2"}
 mkdocs-autorefs = {version = "==0.2.1"}
 mkdocs-material = {version = "==7.2.5"}

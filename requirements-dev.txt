@@ -2,7 +2,7 @@ build
 coverage[toml]
 flake8
 flake8-tabs==2.2.2
-isort==5.7.0
+isort==5.8.0
 mkdocs==1.2.2
 mkdocs-autorefs==0.2.1
 mkdocs-material==7.2.5
