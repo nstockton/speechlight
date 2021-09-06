@@ -1,17 +1,28 @@
-name: Upload Python Package
+name: Create Release And Upload Python Package
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # All history for all branches and tags.
+      - name: Get Project Info
+        id: project_info
+        shell: bash
+        run: |
+          NAME=${GITHUB_REPOSITORY#*/} # Everything after the first /.
+          NAME=${NAME^} # Capitalize first character.
+          VERSION=${GITHUB_REF#refs/tags/v} # Everything after the v.
+          echo ::set-output name=name::${NAME}
+          echo ::set-output name=version::${VERSION}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -19,27 +30,52 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Automatically provided by Actions.
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: ${{ steps.project_info.outputs.name }} Version ${{ steps.project_info.outputs.version }}
           draft: false
           prerelease: false
+          body: Auto-generated release.
+    outputs:
+      name: ${{ steps.project_info.outputs.name }}
+      version: ${{ steps.project_info.outputs.version }}
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
   deploy:
     needs: release
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: "3.7"
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install --upgrade setuptools wheel build twine
-    - name: Build and publish
-      env:
-        TWINE_USERNAME: "__token__"
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-      run: |
-        python -m build
-        python -m twine check dist/*
-        python -m twine upload dist/*
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # All history for all branches and tags.
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.7"
+      - name: Install Dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --upgrade setuptools wheel build twine
+      - name: Build Wheel And Source Archive
+        id: build_dist
+        shell: bash
+        run: |
+          python -m build
+          python -m twine check dist/*
+          WHEEL_PATH=$(ls ./dist/*.whl | head -n1)
+          echo ::set-output name=wheel_path::${WHEEL_PATH}
+          echo ::set-output name=wheel_name::$(basename ${WHEEL_PATH})
+      - name: Publish To GitHub Releases
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Automatically provided by Actions.
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ${{ steps.build_dist.outputs.wheel_path }}
+          asset_name: ${{ steps.build_dist.outputs.wheel_name }}
+          asset_content_type: application/octet-stream
+      - name: Publish To PyPi
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        shell: bash
+        run: 'python -m twine upload dist/*'
