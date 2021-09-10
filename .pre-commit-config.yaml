@@ -60,7 +60,7 @@ repos:
         name: MKDocs
         stages: [commit]
         language: system
-        entry: "python -B -m mkdocs build"
+        entry: "python -B -m mkdocs build --strict"
         types_or: [markdown, python]
         pass_filenames: false
       - id: coverage
