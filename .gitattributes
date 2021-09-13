@@ -9,5 +9,4 @@
 *.yml text eol=crlf
 .gitattributes text eol=crlf
 .gitignore text eol=crlf
-.flake8 text eol=crlf
 Pipfile text eol=crlf
