@@ -6,8 +6,8 @@ verify_ssl = true
 [dev-packages]
 build = "*"
 coverage = {extras = ["toml"], version = "*"}
-flake8 = "*"
-flake8-tabs = {version = "==2.2.2"}
+flake8 = {version = "==3.9.2"}
+flake8-tabs = {version = "==2.3.2"}
 isort = {version = "==5.8.0"}
 mkdocs = {version = "==1.2.2"}
 mkdocs-autorefs = {version = "==0.2.1"}
@@ -16,6 +16,7 @@ mkdocs-material-extensions = {version = "==1.0.1"}
 mkdocstrings = {version = "==0.15.2"}
 mypy = "*"
 pre-commit = "*"
+pyproject-flake8 = {version = "==0.0.1a2"}
 pytkdocs = {git = "https://github.com/nstockton/pytkdocs.git", ref = "tab-indentation-parser"}
 tan = {git = "https://github.com/nstockton/tan.git", ref = "personal"}
 twine = "*"

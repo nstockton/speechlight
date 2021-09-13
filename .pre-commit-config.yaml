@@ -47,7 +47,7 @@ repos:
         name: Flake8
         stages: [commit]
         language: system
-        entry: "python -B -m flake8"
+        entry: "python -B -m pflake8"
         types: [python]
       - id: mypy
         name: MyPy

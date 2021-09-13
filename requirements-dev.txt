@@ -1,7 +1,7 @@
 build
 coverage[toml]
-flake8
-flake8-tabs==2.2.2
+flake8==3.9.2
+flake8-tabs==2.3.2
 isort==5.8.0
 mkdocs==1.2.2
 mkdocs-autorefs==0.2.1
@@ -10,6 +10,7 @@ mkdocs-material-extensions==1.0.1
 mkdocstrings==0.15.2
 mypy
 pre-commit
+pyproject-flake8==0.0.1a2
 git+https://github.com/nstockton/pytkdocs.git@tab-indentation-parser#egg=pytkdocs
 git+https://github.com/nstockton/tan.git@personal#egg=tan
 twine

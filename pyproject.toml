@@ -38,6 +38,54 @@
 	source = ["speechlight"]
 	omit = ["speechlight/speech_libs/*"]
 
+[tool.flake8]
+	# Note that boolean values need to be inside strings. Flake8 will convert them.
+	# Plugins
+	use-flake8-tabs = "true"
+	# Not all checks are replaced by flake8-tabs, however, pycodestyle is still not compatible with tabs.
+	use-pycodestyle-indent = "false"
+	continuation-style = "hanging"
+	## The following are replaced by flake8-tabs plugin, reported as ET codes rather than E codes.
+	# E121, E122, E123, E126, E127, E128,
+	## The following (all disabled) are not replaced by flake8-tabs,
+	# E124 - Requires mixing spaces and tabs: Closing bracket does not match visual indentation.
+	# E125 - Does not take tabs into consideration: Continuation line with same indent as next logical line.
+	# E129 - Requires mixing spaces and tabs: Visually indented line with same indent as next logical line
+	# E131 - Requires mixing spaces and tabs: Continuation line unaligned for hanging indent
+	# E133 - Our preference handled by ET126: Closing bracket is missing indentation
+	# Reporting
+	statistics = "true"
+	doctests = "true"
+	show-source = "true"
+	# Options
+	max-complexity = 15
+	max-line-length = 110
+	# Final bracket should match indentation of the start of the line of the opening bracket
+	hang-closing = "false"
+	ignore = [
+		"E203",  # whitespace before ':'. Caused by Black.
+		"W191",  # indentation contains tabs
+		"W503",  # line break before binary operator. We want W504(line break after binary operator)
+		"ET113",  # (flake8-tabs) use of alignment as indentation, but option continuation-style=hanging does not permit this.
+		"ET121",  # (flake8-tabs) unexpected number of tabs at start of definition line. Caused by Black.
+	]
+	exclude = [
+		".git",
+		"__pycache__",
+		".env",
+		".venv",
+		"env",
+		"venv",
+		"env.bak",
+		"venv.bak",
+		"ENV",
+	]
+	filename = [
+		"*.py",
+		"*.pys",
+		"*.pyw",
+	]
+
 [tool.isort]
 	line_length = 110  # The max length of an import line (used for wrapping long imports).
 	# Specify what extensions isort can be ran against.
