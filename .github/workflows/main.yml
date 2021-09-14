@@ -34,6 +34,7 @@ jobs:
           # Optional - x64 or x86 architecture, defaults to x64.
           architecture: x64
       - name: Install Dependencies
+        shell: bash
         run: |
           python -m pip install --upgrade pip
           python -m pip install --upgrade setuptools wheel
@@ -42,29 +43,16 @@ jobs:
           python -m pre_commit install -t pre-commit
           python -m pre_commit install -t pre-push
       - name: Lint And Test
+        shell: bash
         run: |
           python -m pre_commit run --all-files --show-diff-on-failure --hook-stage commit
           python -m pre_commit run --all-files --show-diff-on-failure --hook-stage push
           python -m build
           python -m twine check dist/*
-  tag:
+  deploy:
     needs: build
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
-    name: Check If Event Is Tag
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check If Tag Is Version
-        id: check_version
-        uses: actions-ecosystem/action-regex-match@v2
-        with:
-          text: ${{ github.ref }}
-          regex: '^refs/tags/v(\d+\.\d+\.\d+)$'
-    outputs:
-      version_match: ${{ steps.check_version.outputs.match }}
-  release:
-    needs: [build, tag]
-    if: ${{ needs.tag.outputs.version_match != '' }}
-    name: Create Release
+    name: Deploy Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -80,31 +68,6 @@ jobs:
           VERSION=${GITHUB_REF#refs/tags/v} # Everything after the v.
           echo ::set-output name=name::${NAME}
           echo ::set-output name=version::${VERSION}
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Automatically provided by Actions.
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ steps.project_info.outputs.name }} Version ${{ steps.project_info.outputs.version }}
-          draft: false
-          prerelease: false
-          body: Auto-generated release.
-    outputs:
-      name: ${{ steps.project_info.outputs.name }}
-      version: ${{ steps.project_info.outputs.version }}
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-  deploy:
-    needs: [build, tag, release]
-    if: ${{ needs.tag.outputs.version_match != '' }}
-    name: Deploy Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # All history for all branches and tags.
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
@@ -122,25 +85,27 @@ jobs:
         run: |
           python -m build
           python -m twine check dist/*
-          WHEEL_PATH=$(ls ./dist/*.whl | head -n1)
-          echo ::set-output name=wheel_path::${WHEEL_PATH}
-          echo ::set-output name=wheel_name::$(basename ${WHEEL_PATH})
-      - name: Publish To GitHub Releases
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Automatically provided by Actions.
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ${{ steps.build_dist.outputs.wheel_path }}
-          asset_name: ${{ steps.build_dist.outputs.wheel_name }}
-          asset_content_type: application/octet-stream
+          token: ${{ secrets.GITHUB_TOKEN }} # Automatically provided by Actions.
+          name: ${{ steps.project_info.outputs.name }} Version ${{ steps.project_info.outputs.version }}
+          body: Auto-generated release.
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
+          files: |
+            dist/*
       - name: Publish To PyPi
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         shell: bash
-        run: 'python -m twine upload dist/*'
+        run: |
+          python -m twine upload dist/*
       - name: Publish Documentation
+        shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
