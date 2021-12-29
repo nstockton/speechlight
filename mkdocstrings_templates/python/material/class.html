@@ -17,11 +17,12 @@
       {% endif %}
 
       {% filter heading(heading_level,
+          role="class",
           id=html_id,
           class="doc doc-heading",
           toc_label=class.name) %}
 
-        <code>Class {% if show_full_path %}{{ class.path }}{% else %}{{ class.name }}{% endif %}</code>
+        <code>Class {% if show_full_path %}{{ class.path }}{% else %}{{ class.name }}{% endif %}{% if config.show_bases and class.bases and class.bases != ['object'] %}({% for base in class.bases -%}{{ base|brief_xref() }}{% if not loop.last %}, {% endif %}{% endfor %}){% endif %}</code>
 
         {% with properties = class.properties %}
           {% include "properties.html" with context %}
@@ -32,6 +33,7 @@
     {% else %}
       {% if config.show_root_toc_entry %}
         {% filter heading(heading_level,
+            role="class",
             id=html_id,
             toc_label=class.path,
             hidden=True) %}
