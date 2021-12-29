@@ -9,7 +9,6 @@ from __future__ import annotations
 # Built-in Modules:
 import os
 import sys
-from typing import Tuple
 from unittest import TestCase
 from unittest.mock import Mock, patch
 
@@ -48,7 +47,7 @@ class TestUtils(TestCase):
 
 	@patch("speechlight.utils.is_frozen")
 	def test_getDirectoryPath(self, mock_is_frozen: Mock) -> None:
-		subdirectory: Tuple[str, ...] = ("level1", "level2")
+		subdirectory: tuple[str, ...] = ("level1", "level2")
 		frozen_dir_name: str = os.path.dirname(sys.executable)
 		frozen_output: str = os.path.realpath(os.path.join(frozen_dir_name, *subdirectory))
 		mock_is_frozen.return_value = True

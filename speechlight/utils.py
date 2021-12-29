@@ -10,10 +10,9 @@ from __future__ import annotations
 import _imp
 import os
 import sys
-from typing import Union
 
 
-def get_freezer() -> Union[str, None]:
+def get_freezer() -> str | None:
 	"""
 	Determines the name of the library used to freeze the code.
 
@@ -23,7 +22,7 @@ def get_freezer() -> Union[str, None]:
 	Returns:
 		The name of the library or None.
 	"""
-	frozen: Union[str, bool, None] = getattr(sys, "frozen", None)
+	frozen: str | bool | None = getattr(sys, "frozen", None)
 	if frozen and hasattr(sys, "_MEIPASS"):
 		return "pyinstaller"
 	elif frozen is True:

@@ -6,9 +6,6 @@
 # Future Modules:
 from __future__ import annotations
 
-# Built-in Modules:
-from typing import List
-
 # Third-party Modules:
 import win32com.server.register
 
@@ -21,8 +18,8 @@ from speechlight import Speech
 
 
 class SpeechlightServer(Speech):
-	_public_methods_: List[str] = ["braille", "say", "silence", "output"]
-	_public_attrs_: List[str] = []
+	_public_methods_: list[str] = ["braille", "say", "silence", "output"]
+	_public_attrs_: list[str] = []
 	# You can generate a different clsid with pythoncom.CreateGuid()
 	_reg_clsid_: str = "{77DFDF59-D59D-4D8B-88A1-2F8F21D75DD7}"
 	_reg_desc_: str = "The Speechlight COM Server"

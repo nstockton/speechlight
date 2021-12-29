@@ -9,7 +9,6 @@ from __future__ import annotations
 # Built-in Modules:
 import platform
 import sys
-from typing import List
 
 # Local Modules:
 from .utils import get_directory_path
@@ -27,4 +26,4 @@ else:  # pragma: no cover
 	from .dummy import Speech
 
 speech: Speech = Speech()
-__all__: List[str] = ["Speech", "speech"]
+__all__: list[str] = ["Speech", "speech"]
