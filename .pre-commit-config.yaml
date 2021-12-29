@@ -6,7 +6,7 @@ exclude: '^$'
 fail_fast: false
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v4.1.0
     hooks:
       - id: check-case-conflict
         stages: [commit]
@@ -20,6 +20,8 @@ repos:
         args: ["--django"]
         stages: [commit]
       - id: requirements-txt-fixer
+        stages: [commit]
+      - id: trailing-whitespace
         stages: [commit]
   - repo: local
     hooks:
