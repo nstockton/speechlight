@@ -138,17 +138,10 @@
 	disallow_any_decorated = false
 
 [[tool.mypy.overrides]]
-	module = "setuptools.*"
-	ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-	module = "win32com.*"
-	ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-	module = "pywintypes.*"
-	ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-	module = "Cocoa.*"
+	module = [
+		"Cocoa.*",
+		"pywintypes.*",
+		"setuptools.*",
+		"win32com.*",
+	]
 	ignore_missing_imports = true
