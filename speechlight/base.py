@@ -8,6 +8,7 @@ from __future__ import annotations
 
 # Built-in Modules:
 from abc import ABC, abstractmethod
+from typing import Optional
 
 
 class BaseSpeech(ABC):
@@ -21,7 +22,7 @@ class BaseSpeech(ABC):
 		"""
 
 	@abstractmethod
-	def output(self, text: str, interrupt: bool | None = None) -> None:
+	def output(self, text: str, interrupt: Optional[bool] = None) -> None:
 		"""
 		Speaks and brailles text.
 
@@ -31,7 +32,7 @@ class BaseSpeech(ABC):
 		"""
 
 	@abstractmethod
-	def say(self, text: str, interrupt: bool | None = None) -> None:
+	def say(self, text: str, interrupt: Optional[bool] = None) -> None:
 		"""
 		Speaks text.
 

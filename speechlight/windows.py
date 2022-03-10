@@ -11,7 +11,7 @@ import ctypes
 import os
 import sys
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Optional
 
 # Local Modules:
 from . import LIB_DIRECTORY, SYSTEM_ARCHITECTURE
@@ -116,9 +116,9 @@ class Speech(BaseSpeech):
 	def jfw_output(
 		self,
 		text: str,
-		braille: bool | None = None,
-		speak: bool | None = None,
-		interrupt: bool | None = None,
+		braille: Optional[bool] = None,
+		speak: Optional[bool] = None,
+		interrupt: Optional[bool] = None,
 	) -> None:
 		"""
 		Outputs text using JFW.
@@ -145,7 +145,7 @@ class Speech(BaseSpeech):
 		"""
 		return bool(self.find_window("JFWUI2", None))
 
-	def jfw_say(self, text: str, interrupt: bool | None = None) -> None:
+	def jfw_say(self, text: str, interrupt: Optional[bool] = None) -> None:
 		"""
 		Speak text using JFW.
 
@@ -170,7 +170,7 @@ class Speech(BaseSpeech):
 		"""
 		self.nvda.nvdaController_brailleMessage(text)
 
-	def nvda_output(self, text: str, interrupt: bool | None = None) -> None:
+	def nvda_output(self, text: str, interrupt: Optional[bool] = None) -> None:
 		"""
 		Outputs text using NVDA.
 
@@ -190,7 +190,7 @@ class Speech(BaseSpeech):
 		"""
 		return bool(self.nvda.nvdaController_testIfRunning() == 0)
 
-	def nvda_say(self, text: str, interrupt: bool | None = None) -> None:
+	def nvda_say(self, text: str, interrupt: Optional[bool] = None) -> None:
 		"""
 		Speak text using NVDA.
 
@@ -215,7 +215,7 @@ class Speech(BaseSpeech):
 		"""
 		self.sa.SA_BrlShowTextW(text)
 
-	def sa_output(self, text: str, interrupt: bool | None = None) -> None:
+	def sa_output(self, text: str, interrupt: Optional[bool] = None) -> None:
 		"""
 		Outputs text using System Access.
 
@@ -235,7 +235,7 @@ class Speech(BaseSpeech):
 		"""
 		return bool(self.sa.SA_IsRunning())
 
-	def sa_say(self, text: str, interrupt: bool | None = None) -> None:
+	def sa_say(self, text: str, interrupt: Optional[bool] = None) -> None:
 		"""
 		Speak text using System Access.
 
@@ -251,7 +251,7 @@ class Speech(BaseSpeech):
 		"""Cancels System Access speech and flushes the speech buffer."""
 		self.sa.SA_StopAudio()
 
-	def sapi_say(self, text: str, interrupt: bool | None = None) -> None:
+	def sapi_say(self, text: str, interrupt: Optional[bool] = None) -> None:
 		"""
 		Speak text using SAPI.
 
@@ -278,7 +278,7 @@ class Speech(BaseSpeech):
 		elif self.jfw_running():
 			self.jfw_braille(text)
 
-	def output(self, text: str, interrupt: bool | None = None) -> None:
+	def output(self, text: str, interrupt: Optional[bool] = None) -> None:
 		if self.nvda_running():
 			self.nvda_output(text, interrupt)
 		elif self.sa_running():
@@ -288,7 +288,7 @@ class Speech(BaseSpeech):
 		else:
 			self.sapi_say(text, interrupt)
 
-	def say(self, text: str, interrupt: bool | None = None) -> None:
+	def say(self, text: str, interrupt: Optional[bool] = None) -> None:
 		if self.nvda_running():
 			self.nvda_say(text, interrupt)
 		elif self.sa_running():

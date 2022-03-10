@@ -6,6 +6,9 @@
 # Future Modules:
 from __future__ import annotations
 
+# Built-in Modules:
+from typing import Optional
+
 # Local Modules:
 from .base import BaseSpeech
 
@@ -14,11 +17,11 @@ class Speech(BaseSpeech):
 	def braille(self, text: str) -> None:
 		pass
 
-	def output(self, text: str, interrupt: bool | None = None) -> None:
+	def output(self, text: str, interrupt: Optional[bool] = None) -> None:
 		self.say(text, interrupt)
 		self.braille(text)
 
-	def say(self, text: str, interrupt: bool | None = None) -> None:
+	def say(self, text: str, interrupt: Optional[bool] = None) -> None:
 		if interrupt:
 			self.silence()
 
