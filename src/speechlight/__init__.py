@@ -14,6 +14,9 @@ import sys
 from .utils import get_directory_path
 
 
+__version__: str = "0.0.0"
+
+
 SYSTEM_ARCHITECTURE: str = platform.architecture()[0]
 LIB_DIRECTORY: str = get_directory_path("speech_libs")
 
