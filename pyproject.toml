@@ -47,6 +47,8 @@
 [tool.poetry.dependencies]
 	python = "^3.7"
 	pyobjc = {version = "^8.4", markers = "platform_system == 'Darwin'"}
+	pyobjc-core = {version = "^8.4", markers = "platform_system == 'Darwin'"}
+	pyobjc-framework-cocoa = {version = "^8.4", markers = "platform_system == 'Darwin'"}
 	pywin32 = {version = "^303", markers = "platform_system == 'Windows'"}
 
 [tool.poetry.dev-dependencies]
