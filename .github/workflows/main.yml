@@ -36,19 +36,16 @@ jobs:
           python-version: ${{ matrix.python-version }}
           # Optional - x64 or x86 architecture, defaults to x64.
           architecture: x64
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: 1.1.13
-          virtualenvs-create: false
-      - name: Load cached venv
-        id: cached-pip-wheels
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Setup Virtual Environment
+        id: cache-virtualenv
+        uses: syphar/restore-virtualenv@v1
+      - name: Restore Pip Cache
+        uses: syphar/restore-pip-download-cache@v1
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
       - name: Install dependencies
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
         run: |
+          python -m pip install --upgrade "poetry==1.1.13"
           poetry install --no-interaction --no-root
       - name: Install library
         run: |
@@ -91,19 +88,16 @@ jobs:
           python-version: "3.10"
           # Optional - x64 or x86 architecture, defaults to x64.
           architecture: x64
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: 1.1.13
-          virtualenvs-create: false
-      - name: Load cached venv
-        id: cached-pip-wheels
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache
-          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Setup Virtual Environment
+        id: cache-virtualenv
+        uses: syphar/restore-virtualenv@v1
+      - name: Restore Pip Cache
+        uses: syphar/restore-pip-download-cache@v1
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
       - name: Install dependencies
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
         run: |
+          python -m pip install --upgrade "poetry==1.1.13"
           poetry install --no-interaction --no-root
       - name: Install library
         run: |
