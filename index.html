@@ -257,9 +257,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
-    Documentation
+  <a href="#running-from-source" class="md-nav__link">
+    Running From Source
   </a>
+  
+    <nav class="md-nav" aria-label="Running From Source">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#windows-specific-instructions" class="md-nav__link">
+    Windows-specific Instructions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linux-specific-instructions" class="md-nav__link">
+    Linux-specific Instructions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -453,9 +473,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
-    Documentation
+  <a href="#running-from-source" class="md-nav__link">
+    Running From Source
   </a>
+  
+    <nav class="md-nav" aria-label="Running From Source">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#windows-specific-instructions" class="md-nav__link">
+    Windows-specific Instructions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linux-specific-instructions" class="md-nav__link">
+    Linux-specific Instructions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -483,17 +523,34 @@
 </a>
 
 
-<h1 id="speechlight">speechlight<a class="headerlink" href="#speechlight" title="Permanent link">&para;</a></h1>
-<p>A lightweight Python library providing a common interface to multiple TTS and screen reader APIs.</p>
+<h1 id="speechlight">Speechlight<a class="headerlink" href="#speechlight" title="Permanent link">&para;</a></h1>
+<p>A lightweight <a href="https://python.org" title="Python Main Page">Python</a> library providing a common interface to multiple <a href="https://en.wikipedia.org/wiki/Speech_synthesis" title="Speech Synthesis Wikipedia Page">TTS</a> and <a href="https://en.wikipedia.org/wiki/Screen_reader" title="Screen Reader Wikipedia Page">screen reader</a> APIs. See the <a href="https://nstockton.github.io/speechlight/api" title="Speechlight API reference Page">API reference</a> for more information.</p>
 <h2 id="license-and-credits">License And Credits<a class="headerlink" href="#license-and-credits" title="Permanent link">&para;</a></h2>
 <p>Speechlight is licensed under the terms of the <a href="https://nstockton.github.io/speechlight/license" title="License Page">Mozilla Public License, version 2.0.</a>
-Speechlight was originally created and is actively maintained by Nick Stockton.
+Speechlight was originally created by <a href="https://github.com/nstockton" title="My Profile On GitHub">Nick Stockton.</a>
 macOS support by Jacob Schmude.</p>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>pip install --user speechlight
 </code></pre></div>
-<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
-<p>Please see the <a href="https://nstockton.github.io/speechlight/api" title="Speechlight API Reference">API reference</a> for more information.</p>
+<h2 id="running-from-source">Running From Source<a class="headerlink" href="#running-from-source" title="Permanent link">&para;</a></h2>
+<h3 id="windows-specific-instructions">Windows-specific Instructions<a class="headerlink" href="#windows-specific-instructions" title="Permanent link">&para;</a></h3>
+<p>Execute the following commands from the root directory of this repository to install the virtual environment and project dependencies.
+<div class="highlight"><pre><span></span><code>py -3 -m venv .venv
+.venv\Scripts\activate.bat
+pip install --upgrade &quot;poetry==1.1.13&quot;
+poetry install --no-ansi
+pre-commit install -t pre-commit
+pre-commit install -t pre-push
+</code></pre></div></p>
+<h3 id="linux-specific-instructions">Linux-specific Instructions<a class="headerlink" href="#linux-specific-instructions" title="Permanent link">&para;</a></h3>
+<p>Execute the following commands from the root directory of this repository to install the virtual environment and project dependencies.
+<div class="highlight"><pre><span></span><code>python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade &quot;poetry==1.1.13&quot;
+poetry install --no-ansi
+pre-commit install -t pre-commit
+pre-commit install -t pre-push
+</code></pre></div></p>
 <h2 id="example-usage">Example Usage<a class="headerlink" href="#example-usage" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>from speechlight import speech
 

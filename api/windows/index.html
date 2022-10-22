@@ -838,6 +838,8 @@
           <summary>Source code in <code>speechlight/windows.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">Speech</span><span class="p">(</span><span class="n">BaseSpeech</span><span class="p">):</span>
 	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_sapi</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_jfw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 		<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">find_window</span><span class="p">:</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">_NamedFuncPointer</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">WinDLL</span><span class="p">(</span><span class="s2">&quot;user32&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">FindWindowW</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">find_window</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_wchar_p</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_wchar_p</span><span class="p">]</span>
@@ -867,21 +869,17 @@
 	<span class="k">def</span> <span class="nf">sapi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># type: ignore[misc] # pragma: no cover</span>
 		<span class="sd">&quot;&quot;&quot;The SAPI COM object.&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
-			<span class="k">try</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Dispatch</span><span class="p">(</span><span class="s2">&quot;SAPI.SpVoice&quot;</span><span class="p">)</span>
-			<span class="k">except</span> <span class="n">ComError</span><span class="p">:</span>
-				<span class="k">pass</span>
-		<span class="k">return</span> <span class="kc">None</span>
+			<span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="n">ComError</span><span class="p">):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_sapi</span> <span class="o">=</span> <span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Dispatch</span><span class="p">(</span><span class="s2">&quot;SAPI.SpVoice&quot;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sapi</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">jfw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># type: ignore[misc] # pragma: no cover</span>
 		<span class="sd">&quot;&quot;&quot;The JFW COM object.&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
-			<span class="k">try</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Dispatch</span><span class="p">(</span><span class="s2">&quot;FreedomSci.JawsApi&quot;</span><span class="p">)</span>
-			<span class="k">except</span> <span class="n">ComError</span><span class="p">:</span>
-				<span class="k">pass</span>
-		<span class="k">return</span> <span class="kc">None</span>
+			<span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="n">ComError</span><span class="p">):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_jfw</span> <span class="o">=</span> <span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Dispatch</span><span class="p">(</span><span class="s2">&quot;FreedomSci.JawsApi&quot;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jfw</span>
 
 	<span class="k">def</span> <span class="nf">jfw_braille</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 		<span class="sd">&quot;&quot;&quot;</span>
@@ -1040,14 +1038,14 @@
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sapi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">interrupt</span><span class="p">:</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">sapi</span><span class="o">.</span><span class="n">Speak</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">SPF_ASYNC</span> <span class="o">|</span> <span class="n">SPF_PURGEBEFORESPEAK</span> <span class="o">|</span> <span class="n">SPF_IS_NOT_XML</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">sapi</span><span class="o">.</span><span class="n">Speak</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">SPF_ASYNC</span> <span class="o">|</span> <span class="n">SPF_PURGE_BEFORE_SPEAK</span> <span class="o">|</span> <span class="n">SPF_IS_NOT_XML</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">sapi</span><span class="o">.</span><span class="n">Speak</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">SPF_ASYNC</span> <span class="o">|</span> <span class="n">SPF_IS_NOT_XML</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">sapi_silence</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 		<span class="sd">&quot;&quot;&quot;Cancels SAPI speech and flushes the speech buffer.&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sapi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">sapi</span><span class="o">.</span><span class="n">Speak</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">SPF_ASYNC</span> <span class="o">|</span> <span class="n">SPF_PURGEBEFORESPEAK</span> <span class="o">|</span> <span class="n">SPF_IS_NOT_XML</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">sapi</span><span class="o">.</span><span class="n">Speak</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">SPF_ASYNC</span> <span class="o">|</span> <span class="n">SPF_PURGE_BEFORE_SPEAK</span> <span class="o">|</span> <span class="n">SPF_IS_NOT_XML</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">braille</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nvda_running</span><span class="p">():</span>
@@ -2071,7 +2069,7 @@
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sapi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 		<span class="k">if</span> <span class="n">interrupt</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">sapi</span><span class="o">.</span><span class="n">Speak</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">SPF_ASYNC</span> <span class="o">|</span> <span class="n">SPF_PURGEBEFORESPEAK</span> <span class="o">|</span> <span class="n">SPF_IS_NOT_XML</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">sapi</span><span class="o">.</span><span class="n">Speak</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">SPF_ASYNC</span> <span class="o">|</span> <span class="n">SPF_PURGE_BEFORE_SPEAK</span> <span class="o">|</span> <span class="n">SPF_IS_NOT_XML</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">sapi</span><span class="o">.</span><span class="n">Speak</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">SPF_ASYNC</span> <span class="o">|</span> <span class="n">SPF_IS_NOT_XML</span><span class="p">)</span>
 </code></pre></div>
@@ -2101,7 +2099,7 @@
           <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">sapi_silence</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 	<span class="sd">&quot;&quot;&quot;Cancels SAPI speech and flushes the speech buffer.&quot;&quot;&quot;</span>
 	<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sapi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">sapi</span><span class="o">.</span><span class="n">Speak</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">SPF_ASYNC</span> <span class="o">|</span> <span class="n">SPF_PURGEBEFORESPEAK</span> <span class="o">|</span> <span class="n">SPF_IS_NOT_XML</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">sapi</span><span class="o">.</span><span class="n">Speak</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">SPF_ASYNC</span> <span class="o">|</span> <span class="n">SPF_PURGE_BEFORE_SPEAK</span> <span class="o">|</span> <span class="n">SPF_IS_NOT_XML</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
