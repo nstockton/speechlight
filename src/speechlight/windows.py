@@ -11,6 +11,7 @@ import ctypes
 import os
 import sys
 from collections.abc import Callable
+from contextlib import suppress
 from typing import Any, Optional
 
 # Local Modules:
@@ -25,7 +26,7 @@ if sys.platform == "win32":  # pragma: no cover
 
 # SAPI constants
 SPF_ASYNC: int = 1  # Specifies that the Speak call should be asynchronous.
-SPF_PURGEBEFORESPEAK: int = 2  # Purges all pending speak requests prior to this speak call.
+SPF_PURGE_BEFORE_SPEAK: int = 2  # Purges all pending speak requests prior to this speak call.
 SPF_IS_NOT_XML: int = 16  # The input text will not be parsed for XML markup.
 
 
@@ -59,6 +60,8 @@ class MockSA(object):  # pragma: no cover
 
 class Speech(BaseSpeech):
 	def __init__(self) -> None:  # pragma: no cover
+		self._sapi: Optional[Any] = None
+		self._jfw: Optional[Any] = None
 		if sys.platform == "win32":
 			self.find_window: ctypes._NamedFuncPointer = ctypes.WinDLL("user32").FindWindowW
 			self.find_window.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p]
@@ -88,21 +91,17 @@ class Speech(BaseSpeech):
 	def sapi(self) -> Any:  # type: ignore[misc] # pragma: no cover
 		"""The SAPI COM object."""
 		if sys.platform == "win32":
-			try:
-				return win32com.client.Dispatch("SAPI.SpVoice")
-			except ComError:
-				pass
-		return None
+			with suppress(ComError):
+				self._sapi = win32com.client.Dispatch("SAPI.SpVoice")
+		return self._sapi
 
 	@property
 	def jfw(self) -> Any:  # type: ignore[misc] # pragma: no cover
 		"""The JFW COM object."""
 		if sys.platform == "win32":
-			try:
-				return win32com.client.Dispatch("FreedomSci.JawsApi")
-			except ComError:
-				pass
-		return None
+			with suppress(ComError):
+				self._jfw = win32com.client.Dispatch("FreedomSci.JawsApi")
+		return self._jfw
 
 	def jfw_braille(self, text: str) -> None:
 		"""
@@ -261,14 +260,14 @@ class Speech(BaseSpeech):
 		"""
 		if self.sapi is not None:
 			if interrupt:
-				self.sapi.Speak(text, SPF_ASYNC | SPF_PURGEBEFORESPEAK | SPF_IS_NOT_XML)
+				self.sapi.Speak(text, SPF_ASYNC | SPF_PURGE_BEFORE_SPEAK | SPF_IS_NOT_XML)
 			else:
 				self.sapi.Speak(text, SPF_ASYNC | SPF_IS_NOT_XML)
 
 	def sapi_silence(self) -> None:
 		"""Cancels SAPI speech and flushes the speech buffer."""
 		if self.sapi is not None:
-			self.sapi.Speak("", SPF_ASYNC | SPF_PURGEBEFORESPEAK | SPF_IS_NOT_XML)
+			self.sapi.Speak("", SPF_ASYNC | SPF_PURGE_BEFORE_SPEAK | SPF_IS_NOT_XML)
 
 	def braille(self, text: str) -> None:
 		if self.nvda_running():

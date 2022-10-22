@@ -10,7 +10,7 @@ from __future__ import annotations
 from unittest import TestCase, mock
 
 # Speechlight Modules:
-from speechlight.windows import SPF_ASYNC, SPF_IS_NOT_XML, SPF_PURGEBEFORESPEAK, Speech
+from speechlight.windows import SPF_ASYNC, SPF_IS_NOT_XML, SPF_PURGE_BEFORE_SPEAK, Speech
 
 
 class TestWindows(TestCase):
@@ -132,14 +132,14 @@ class TestWindows(TestCase):
 			mock_sapi.reset_mock()
 			self.speech.sapi_say(self.text, True)
 			mock_sapi.return_value.Speak.assert_called_once_with(
-				self.text, SPF_ASYNC | SPF_PURGEBEFORESPEAK | SPF_IS_NOT_XML
+				self.text, SPF_ASYNC | SPF_PURGE_BEFORE_SPEAK | SPF_IS_NOT_XML
 			)
 
 	def test_sapi_silence(self) -> None:
 		with mock.patch("speechlight.windows.Speech.sapi", mock.PropertyMock()) as mock_sapi:
 			self.speech.sapi_silence()
 			mock_sapi.return_value.Speak.assert_called_once_with(
-				"", SPF_ASYNC | SPF_PURGEBEFORESPEAK | SPF_IS_NOT_XML
+				"", SPF_ASYNC | SPF_PURGE_BEFORE_SPEAK | SPF_IS_NOT_XML
 			)
 
 	@mock.patch("speechlight.windows.Speech.jfw_braille")
