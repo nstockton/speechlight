@@ -59,7 +59,7 @@ jobs:
           python -m pre_commit run --all-files --show-diff-on-failure --hook-stage push
           poetry build --no-interaction
       - name: Test Documentation
-        if: matrix.python-version == '3.11'
+        if: matrix.python-version == '3.10'
         run: |
           python -m pre_commit run --all-files --show-diff-on-failure --hook-stage manual
   deploy:
@@ -87,7 +87,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: "3.10"
           # Optional - x64 or x86 architecture, defaults to x64.
           architecture: x64
       - name: Setup Virtual Environment
