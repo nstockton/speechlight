@@ -15,8 +15,21 @@
 	homepage = "https://github.com/nstockton/speechlight"
 	repository = "https://github.com/nstockton/speechlight"
 	documentation = "https://nstockton.github.io/speechlight"
-	keywords = ["blind", "braille", "screen reader", "tts", "text to speech"]
+	keywords = [
+		"blind",
+		"braille",
+		"screen reader",
+		"tts",
+		"speech",
+		"accessibility",
+		"jaws",
+		"nvda",
+		"sapi",
+		"system access",
+	]
 	classifiers = [
+		"Development Status :: 5 - Production/Stable",
+		"Intended Audience :: Developers",
 		"License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
 		"Programming Language :: Python",
 		"Programming Language :: Python :: 3",
@@ -25,15 +38,14 @@
 		"Programming Language :: Python :: 3.8",
 		"Programming Language :: Python :: 3.9",
 		"Programming Language :: Python :: 3.10",
+		"Programming Language :: Python :: 3.11",
 		"Programming Language :: Python :: Implementation :: CPython",
-		"Development Status :: 5 - Production/Stable",
-		"Intended Audience :: Developers",
-		"Operating System :: OS Independent",
-		"Topic :: Software Development :: Libraries",
-		"Operating System :: POSIX :: Linux",
-		"Operating System :: Unix",
 		"Operating System :: MacOS",
 		"Operating System :: Microsoft :: Windows",
+		"Operating System :: OS Independent",
+		"Operating System :: POSIX :: Linux",
+		"Operating System :: Unix",
+		"Topic :: Software Development :: Libraries",
 	]
 	packages = [
 		{include = "speechlight", from = "src"},
