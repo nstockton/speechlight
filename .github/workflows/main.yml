@@ -20,18 +20,19 @@ jobs:
       max-parallel: 4
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0 # All history for all branches and tags.
+          submodules: 'recursive' # All submodules.
       - name: Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
           # Optional - x64 or x86 architecture, defaults to x64.
@@ -58,7 +59,7 @@ jobs:
           python -m pre_commit run --all-files --show-diff-on-failure --hook-stage push
           poetry build --no-interaction
       - name: Test Documentation
-        if: matrix.python-version == '3.10'
+        if: matrix.python-version == '3.11'
         run: |
           python -m pre_commit run --all-files --show-diff-on-failure --hook-stage manual
   deploy:
@@ -71,21 +72,22 @@ jobs:
         shell: bash
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0 # All history for all branches and tags.
+          submodules: 'recursive' # All submodules.
       - name: Get Project Info
         id: project_info
         run: |
           NAME=${GITHUB_REPOSITORY#*/} # Everything after the first /.
           NAME=${NAME^} # Capitalize first character.
           VERSION=${GITHUB_REF#refs/tags/v} # Everything after the v.
-          echo ::set-output name=name::${NAME}
-          echo ::set-output name=version::${VERSION}
+          echo "name=${NAME}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
           # Optional - x64 or x86 architecture, defaults to x64.
           architecture: x64
       - name: Setup Virtual Environment
