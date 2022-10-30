@@ -543,7 +543,7 @@ macOS support by Jacob Schmude.</p>
 <p>Execute the following commands from the root directory of this repository to install the virtual environment and project dependencies.
 <div class="highlight"><pre><span></span><code>py -3 -m venv .venv
 .venv\Scripts\activate.bat
-pip install --upgrade &quot;poetry==1.1.13&quot;
+pip install --upgrade --require-hashes --requirement requirements-poetry.txt
 poetry install --no-ansi
 pre-commit install -t pre-commit
 pre-commit install -t pre-push
@@ -552,7 +552,7 @@ pre-commit install -t pre-push
 <p>Execute the following commands from the root directory of this repository to install the virtual environment and project dependencies.
 <div class="highlight"><pre><span></span><code>python3 -m venv .venv
 source .venv/bin/activate
-pip install --upgrade &quot;poetry==1.1.13&quot;
+pip install --upgrade --require-hashes --requirement requirements-poetry.txt
 poetry install --no-ansi
 pre-commit install -t pre-commit
 pre-commit install -t pre-push
