@@ -1,7 +1,7 @@
 [build-system]
 	requires = [
 		"poetry-core>=1.0.0",
-		"poetry-dynamic-versioning>=0.13.1,<0.14.0",
+		"poetry-dynamic-versioning==0.20.0",
 	]
 	build-backend = "poetry.core.masonry.api"
 
@@ -59,22 +59,25 @@
 [tool.poetry.dependencies]
 	python = "^3.7"
 	pyobjc = {version = "^8.4", platform = "darwin"}
-	pywin32 = {version = "^303", platform = "win32"}
+	pywin32 = {version = ">=303,<400", platform = "win32"}
 
 [tool.poetry.dev-dependencies]
-	coverage = {version = "^6.3", extras = ["toml"]}
+	click = "8.0.4"  # Required by Tan.
+	coverage = {version = "^6.5", extras = ["toml"]}
 	flake8 = "^3.9"
 	flake8-tabs = "^2.3"
-	isort = "~5.8"
+	importlib-metadata = {version = "4.13.0", python = "<3.10"}  # Prevent version in Poetry requirements from being overridden.
+	isort = "^5.10.1"
+	jinja2 = "3.0.3"  # Required by Tan.
 	mkdocs = "1.2.3"
 	mkdocs-autorefs = "0.3.1"
 	mkdocs-material = "8.1.3"
 	mkdocs-material-extensions = "1.0.3"
 	mkdocstrings = "0.17.0"
-	mypy = "^0.931"
-	poetry-dynamic-versioning = "^0.13.1"
+	mypy = ">=0.950,<1.0"
+	poetry-dynamic-versioning = "0.20.0"
 	pre-commit = "^2.17"
-	pyproject-flake8 = "^0.0.1-alpha.2"
+	pyproject-flake8 = "^3.9"
 	pytkdocs = {git = "https://github.com/nstockton/pytkdocs.git", rev = "9991d493b408c403ac5691074e2af2e509f22926"}
 	tan = "^21.14"
 
@@ -168,6 +171,7 @@
 
 [tool.isort]
 	line_length = 110  # The max length of an import line (used for wrapping long imports).
+	color_output = false
 	# Specify what extensions isort can be ran against.
 	supported_extensions = ["py", "pyi", "pys", "pyw"]
 	extend_skip = []  # List of files to skip.

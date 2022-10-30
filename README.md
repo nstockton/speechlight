@@ -32,7 +32,7 @@ Execute the following commands from the root directory of this repository to ins
 ```
 py -3 -m venv .venv
 .venv\Scripts\activate.bat
-pip install --upgrade "poetry==1.1.13"
+pip install --upgrade --require-hashes --requirement requirements-poetry.txt
 poetry install --no-ansi
 pre-commit install -t pre-commit
 pre-commit install -t pre-push
@@ -44,7 +44,7 @@ Execute the following commands from the root directory of this repository to ins
 ```
 python3 -m venv .venv
 source .venv/bin/activate
-pip install --upgrade "poetry==1.1.13"
+pip install --upgrade --require-hashes --requirement requirements-poetry.txt
 poetry install --no-ansi
 pre-commit install -t pre-commit
 pre-commit install -t pre-push
