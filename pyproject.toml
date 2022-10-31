@@ -39,13 +39,21 @@
 		"Programming Language :: Python :: 3.9",
 		"Programming Language :: Python :: 3.10",
 		"Programming Language :: Python :: 3.11",
+		"Programming Language :: Python :: Implementation",
 		"Programming Language :: Python :: Implementation :: CPython",
 		"Operating System :: MacOS",
+		"Operating System :: MacOS :: MacOS X",
+		"Operating System :: Microsoft",
 		"Operating System :: Microsoft :: Windows",
 		"Operating System :: OS Independent",
+		"Operating System :: POSIX",
+		"Operating System :: POSIX :: BSD",
 		"Operating System :: POSIX :: Linux",
 		"Operating System :: Unix",
+		"Topic :: Adaptive Technologies",
+		"Topic :: Software Development",
 		"Topic :: Software Development :: Libraries",
+		"Topic :: Software Development :: Libraries :: Python Modules",
 	]
 	packages = [
 		{include = "speechlight", from = "src"},
@@ -66,7 +74,7 @@
 	coverage = {version = "^6.5", extras = ["toml"]}
 	flake8 = "^3.9"
 	flake8-tabs = "^2.3"
-	importlib-metadata = {version = "4.13.0", python = "<3.10"}  # Prevent version in Poetry requirements from being overridden.
+	importlib-metadata = "4.13.0"  # Prevent version in Poetry requirements from being overridden.
 	isort = "^5.10.1"
 	jinja2 = "3.0.3"  # Required by Tan.
 	mkdocs = "1.2.3"
