@@ -1,9 +1,9 @@
 [build-system]
 	requires = [
 		"poetry-core>=1.0.0",
-		"poetry-dynamic-versioning==0.20.0",
+		"poetry-dynamic-versioning==1.2.0",
 	]
-	build-backend = "poetry.core.masonry.api"
+	build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.poetry]
 	name = "speechlight"
@@ -34,11 +34,11 @@
 		"Programming Language :: Python",
 		"Programming Language :: Python :: 3",
 		"Programming Language :: Python :: 3 :: Only",
-		"Programming Language :: Python :: 3.7",
 		"Programming Language :: Python :: 3.8",
 		"Programming Language :: Python :: 3.9",
 		"Programming Language :: Python :: 3.10",
 		"Programming Language :: Python :: 3.11",
+		"Programming Language :: Python :: 3.12",
 		"Programming Language :: Python :: Implementation",
 		"Programming Language :: Python :: Implementation :: CPython",
 		"Operating System :: MacOS",
@@ -65,29 +65,33 @@
 	exclude = []
 
 [tool.poetry.dependencies]
-	python = "^3.7"
-	pyobjc = {version = "^8.4", platform = "darwin"}
-	pywin32 = {version = ">=303,<400", platform = "win32"}
+	python = "^3.8"
+	pyobjc = {version = "^10.0", platform = "darwin"}
+	pywin32 = {version = ">=306,<400", platform = "win32"}
 
 [tool.poetry.dev-dependencies]
-	click = "8.0.4"  # Required by Tan.
-	coverage = {version = "^6.5", extras = ["toml"]}
-	flake8 = "^3.9"
-	flake8-tabs = "^2.3"
-	importlib-metadata = "4.13.0"  # Prevent version in Poetry requirements from being overridden.
-	isort = "^5.10.1"
-	jinja2 = "3.0.3"  # Required by Tan.
+	poetry-dynamic-versioning = {version = "1.2.0", extras = ["plugin"]}
+	pre-commit = "^3.5"
+
+[tool.poetry.group.docs.dependencies]
 	mkdocs = "1.2.3"
 	mkdocs-autorefs = "0.3.1"
 	mkdocs-material = "8.1.3"
 	mkdocs-material-extensions = "1.0.3"
 	mkdocstrings = "0.17.0"
-	mypy = ">=0.950,<1.0"
-	poetry-dynamic-versioning = "0.20.0"
-	pre-commit = "^2.17"
-	pyproject-flake8 = "^3.9"
 	pytkdocs = {git = "https://github.com/nstockton/pytkdocs.git", rev = "9991d493b408c403ac5691074e2af2e509f22926"}
-	tan = "^21.14"
+
+[tool.poetry.group.lint.dependencies]
+	click = "8.0.4"  # Required by Tan.
+	flake8 = "5.0.4"
+	flake8-pyproject = "1.2.3"
+	isort = "^5.12.0"
+	jinja2 = "3.0.3"  # Required by Tan.
+	mypy = "^1.7"
+	tan = "^23.7"
+
+[tool.poetry.group.test.dependencies]
+	coverage = {version = "^7.3", extras = ["toml"]}
 
 [tool.poetry-dynamic-versioning]
 	enable = true
@@ -106,7 +110,7 @@
 	use-tabs = true
 	safe = true
 	line-length = 110
-	target-version = ["py37", "py38", "py39", "py310"]
+	target-version = ["py38", "py39", "py310", "py311", "py312"]
 	exclude = '(/(\.eggs|\.git|\.mypy_cache|\.tox|\.venv|build|dist)|__pycache__)'
 	include = '/((src/speechlight|tests).*\.py[isw]?|com_server\.py)$'
 
@@ -132,7 +136,8 @@
 [tool.flake8]
 	# Note that boolean values need to be inside strings. Flake8 will convert them.
 	# Plugins
-	use-flake8-tabs = "true"
+	# Note that for the moment flake8-tabs is out of date and doesn't work with the latest versions of flake8.
+	#use-flake8-tabs = "true"  # Uncomment when using flake8-tabs again.
 	# Not all checks are replaced by flake8-tabs, however, pycodestyle is still not compatible with tabs.
 	use-pycodestyle-indent = "false"
 	continuation-style = "hanging"
@@ -154,7 +159,12 @@
 	# Final bracket should match indentation of the start of the line of the opening bracket
 	hang-closing = "false"
 	ignore = [
+		"E101",  # indentation contains mixed spaces and tabs (remove when using flake8-tabs again).
+		"E201",  # whitespace after '['. Seems to trigger even in string.
+		"E202",  # whitespace before ')'. Seems to trigger even in string.
 		"E203",  # whitespace before ':'. Caused by Black.
+		"E231",  # missing whitespace after ':'. Seems to trigger even in string.
+		"E241",  # multiple spaces after ','. Seems to trigger even in string.
 		"W191",  # indentation contains tabs
 		"W503",  # line break before binary operator. We want W504(line break after binary operator)
 		"ET113",  # (flake8-tabs) use of alignment as indentation, but option continuation-style=hanging does not permit this.
@@ -206,7 +216,12 @@
 	# The heading to display for third-party imports.
 	import_heading_thirdparty = "Third-party Modules:"
 	# Override known third-party imports.
-	known_third_party = ["pywin32", "win32com", "pywintypes", "Cocoa"]
+	known_third_party = [
+		"pywin32",
+		"win32com",
+		"pywintypes",
+		"Cocoa",
+	]
 	# The heading to display for first-party imports.
 	import_heading_firstparty = "Speechlight Modules:"
 	# Override known first-party imports.

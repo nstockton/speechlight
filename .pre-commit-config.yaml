@@ -2,11 +2,11 @@
 # python -B -m pre_commit run --all-files
 # Update this file:
 # python -B -m pre_commit autoupdate
-exclude: '^$'
+exclude: '^requirements-poetry\.txt$'
 fail_fast: false
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.5.0
     hooks:
       - id: check-case-conflict
         stages: [commit]
@@ -20,7 +20,7 @@ repos:
         args: ["--django"]
         stages: [commit]
       - id: requirements-txt-fixer
-        args: ["requirements-poetry.txt"]
+        #args: ["requirements.txt"]
         stages: [commit]
       - id: trailing-whitespace
         stages: [commit]
@@ -50,7 +50,7 @@ repos:
         name: Flake8
         stages: [commit]
         language: system
-        entry: "python -B -m pflake8"
+        entry: "python -B -m flake8"
         types: [python]
       - id: mypy
         name: MyPy
