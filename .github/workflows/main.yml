@@ -21,38 +21,45 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        include:
+          - os: ubuntu-latest
+            activate_path: ./.venv/bin/activate
+          - os: macos-latest
+            activate_path: ./.venv/bin/activate
+          - os: windows-latest
+            activate_path: ./.venv/Scripts/activate
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # All history for all branches and tags.
           submodules: 'recursive' # All submodules.
       - name: Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           # Optional - x64 or x86 architecture, defaults to x64.
           architecture: x64
-      - name: Setup Virtual Environment
-        id: cache-virtualenv
-        uses: syphar/restore-virtualenv@v1
-      - name: Restore Pip Cache
-        uses: syphar/restore-pip-download-cache@v1
-        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+      - name: Cache virtualenv
+        id: cache_virtualenv
+        uses: actions/cache@v4
+        with:
+          key: venv-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/requirements-poetry.txt', '**/poetry.lock') }}
+          path: .venv
       - name: Install dependencies
-        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+        if: steps.cache_virtualenv.outputs.cache-hit != 'true'
         run: |
+          python -m venv .venv
+          source ${{ matrix.activate_path }}
           python -m pip install --progress-bar off --upgrade --require-hashes --requirement requirements-poetry.txt
-          poetry install --no-interaction --no-root
-      - name: Install library
-        run: |
           poetry install --no-interaction
       - name: Lint And Test
         run: |
+          source ${{ matrix.activate_path }}
           python -m pre_commit install -t pre-commit
           python -m pre_commit install -t pre-push
           python -m pre_commit run --all-files --show-diff-on-failure --hook-stage commit
@@ -61,6 +68,7 @@ jobs:
       - name: Test Documentation
         if: contains(fromJson('["3.10", "3.11", "3.12"]'), matrix.python-version)
         run: |
+          source ${{ matrix.activate_path }}
           python -m pre_commit run --all-files --show-diff-on-failure --hook-stage manual
   deploy:
     needs: build
@@ -72,7 +80,7 @@ jobs:
         shell: bash
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # All history for all branches and tags.
           submodules: 'recursive' # All submodules.
@@ -85,32 +93,25 @@ jobs:
           echo "name=${NAME}" >> $GITHUB_OUTPUT
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.12.2"
           # Optional - x64 or x86 architecture, defaults to x64.
           architecture: x64
-      - name: Setup Virtual Environment
-        id: cache-virtualenv
-        uses: syphar/restore-virtualenv@v1
-      - name: Restore Pip Cache
-        uses: syphar/restore-pip-download-cache@v1
-        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
       - name: Install dependencies
-        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
         run: |
+          python -m venv .venv
+          source ./.venv/bin/activate
           python -m pip install --progress-bar off --upgrade --require-hashes --requirement requirements-poetry.txt
-          poetry install --no-interaction --no-root
-      - name: Install library
-        run: |
           poetry install --no-interaction
       - name: Build Wheel And Source Archive
         id: build_dist
         run: |
+          source ./.venv/bin/activate
           poetry build --no-interaction
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }} # Automatically provided by Actions.
           name: ${{ steps.project_info.outputs.name }} Version ${{ steps.project_info.outputs.version }}
@@ -124,10 +125,12 @@ jobs:
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
         run: |
+          source ./.venv/bin/activate
           poetry config pypi-token.pypi $PYPI_TOKEN
           poetry publish --no-interaction
       - name: Publish Documentation
         run: |
+          source ./.venv/bin/activate
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           mkdocs gh-deploy --force
