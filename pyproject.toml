@@ -86,13 +86,13 @@
 	click = "8.0.4"  # Required by Tan.
 	flake8 = "5.0.4"
 	flake8-pyproject = "1.2.3"
-	isort = "^5.12.0"
+	isort = "^5.13"
 	jinja2 = "3.0.3"  # Required by Tan.
-	mypy = "^1.7"
+	mypy = "^1.8"
 	tan = "^23.7"
 
 [tool.poetry.group.test.dependencies]
-	coverage = {version = "^7.3", extras = ["toml"]}
+	coverage = {version = "^7.4", extras = ["toml"]}
 
 [tool.poetry-dynamic-versioning]
 	enable = true
@@ -195,6 +195,8 @@
 	supported_extensions = ["py", "pyi", "pys", "pyw"]
 	extend_skip = []  # List of files to skip.
 	indent = "tab"  # String to place for indents.
+	atomic = true  # Ensures the output doesn't save if the resulting file contains syntax errors.
+	dedup_headings = true  # Only show an identical custom import heading comment once.
 	multi_line_output = 3  # Vertical hanging indent for long sections of multiple imports.
 	include_trailing_comma = true  # Include a trailing comma on multi line imports that include parentheses.
 	force_grid_wrap = 0  # Only consider line length when forcing lines to be grid wrapped.

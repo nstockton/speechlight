@@ -2,74 +2,135 @@
 # python -B -m pre_commit run --all-files
 # Update this file:
 # python -B -m pre_commit autoupdate
-exclude: '^requirements-poetry\.txt$'
+exclude: '^$'
 fail_fast: false
+default_language_version:
+  python: python3
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
+      - id: check-builtin-literals
+        name: Require literal syntax when initializing builtin types
+        stages: [commit]
       - id: check-case-conflict
+        name: Check for case-insensitive file name conflicts
+        stages: [commit]
+      - id: check-merge-conflict
+        name: Check merge conflicts are not being committed
         stages: [commit]
       - id: check-toml
+        name: Check toml files for parseable syntax
         stages: [commit]
       - id: check-yaml
+        name: Check yaml files for parseable syntax
+        stages: [commit]
+      - id: debug-statements
+        name: Detect accidentally committed debug statements
+        stages: [commit]
+      - id: detect-private-key
+        name: Detect if private key is added to the repository
+        stages: [commit]
+      - id: end-of-file-fixer
+        name: Make sure file is empty or ends with a newline
         stages: [commit]
       - id: fix-byte-order-marker
+        name: Remove UTF-8 byte order marker
+        stages: [commit]
+      - id: fix-encoding-pragma
+        name: Remove encoding header from Python files
+        args: ["--remove"]
+        stages: [commit]
+      - id: mixed-line-ending
+        name: Check if mixed line endings are used
         stages: [commit]
       - id: name-tests-test
+        name: Verify test files are named correctly
         args: ["--django"]
         stages: [commit]
-      - id: requirements-txt-fixer
-        #args: ["requirements.txt"]
-        stages: [commit]
       - id: trailing-whitespace
+        name: Remove trailing whitespace at end of line
+        stages: [commit]
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.10.0
+    hooks:
+      - id: python-check-blanket-noqa
+        name: Check noqa annotations always occur with specific codes
+        stages: [commit]
+      - id: python-check-blanket-type-ignore
+        name: Check type ignore annotations always occur with specific codes
+        stages: [commit]
+      - id: python-check-mock-methods
+        name: Prevent common mistakes when using mock methods
+        stages: [commit]
+      - id: python-no-eval
+        name: Check for use of eval() function
+        stages: [commit]
+      - id: python-no-log-warn
+        name: Check for deprecated logger.warn() method
+        stages: [commit]
+      - id: python-use-type-annotations
+        name: Check type annotations are used instead of type comments
+        stages: [commit]
+      - id: text-unicode-replacement-char
+        name: Check for files containing a UTF-8 Unicode replacement character
         stages: [commit]
   - repo: local
     hooks:
       - id: unittest
         name: UnitTest
-        args: ["--failfast"]
-        stages: [commit]
-        language: system
         entry: "python -B -m coverage run -m unittest"
+        args: ["--failfast"]
+        language: system
+        pass_filenames: false  # Do not pass file names as positional arguments.
+        require_serial: true  # Execute using a single process.
+        stages: [pre-commit, pre-merge-commit]
         types: [python]
-        pass_filenames: false
       - id: isort
         name: ISort
-        stages: [commit]
-        language: system
         entry: "python -B -m isort"
+        language: system
+        pass_filenames: true  # Pass file names as positional arguments.
+        require_serial: false  # Execute in parallel.
+        stages: [pre-commit, pre-merge-commit]
         types: [python]
       - id: tan
         name: Tan
-        stages: [commit]
-        language: system
         entry: "python -B -m black"
+        language: system
+        pass_filenames: true  # Pass file names as positional arguments.
+        require_serial: true  # Execute using a single process.
+        stages: [pre-commit, pre-merge-commit]
         types: [python]
       - id: flake8
         name: Flake8
-        stages: [commit]
-        language: system
         entry: "python -B -m flake8"
+        language: system
+        pass_filenames: true  # Pass file names as positional arguments.
+        require_serial: true  # Execute using a single process.
+        stages: [pre-commit, pre-merge-commit]
         types: [python]
       - id: mypy
         name: MyPy
-        stages: [commit]
-        language: system
         entry: "python -B -m mypy"
+        language: system
+        pass_filenames: false  # Do not pass file names as positional arguments.
+        require_serial: true  # Execute using a single process.
+        stages: [pre-commit, pre-merge-commit]
         types: [python]
-        pass_filenames: false
       - id: mkdocs
         name: MKDocs
-        stages: [manual]
-        language: system
         entry: "python -B -m mkdocs build --clean --strict"
+        language: system
+        pass_filenames: false  # Do not pass file names as positional arguments.
+        require_serial: true  # Execute using a single process.
+        stages: [manual]
         types_or: [markdown, python]
-        pass_filenames: false
       - id: coverage
         name: Coverage
-        stages: [push]
-        language: system
         entry: "python -B -m coverage report"
+        language: system
+        pass_filenames: false  # Do not pass file names as positional arguments.
+        require_serial: true  # Execute using a single process.
+        stages: [push]
         types: [python]
-        pass_filenames: false
