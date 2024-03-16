@@ -33,12 +33,17 @@ jobs:
       run:
         shell: bash
     steps:
+      - name: Set image info in env
+        run: |
+          echo "ImageOS=${ImageOS}" >> "$GITHUB_ENV"
+          echo "ImageVersion=${ImageVersion}" >> "$GITHUB_ENV"
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # All history for all branches and tags.
           submodules: 'recursive' # All submodules.
       - name: Setup Python ${{ matrix.python-version }}
+        id: setup_python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
@@ -48,7 +53,7 @@ jobs:
         id: cache_virtualenv
         uses: actions/cache@v4
         with:
-          key: venv-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('**/requirements-poetry.txt', '**/poetry.lock') }}
+          key: venv-${{ env.ImageOS }}${{ runner.arch }}-${{ env.ImageVersion }}-py${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('**/requirements-poetry.txt', '**/poetry.lock') }}
           path: .venv
       - name: Install dependencies
         if: steps.cache_virtualenv.outputs.cache-hit != 'true'
