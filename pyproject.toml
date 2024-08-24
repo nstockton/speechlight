@@ -1,7 +1,7 @@
 [build-system]
 	requires = [
 		"poetry-core>=1.0.0",
-		"poetry-dynamic-versioning==1.2.0",
+		"poetry-dynamic-versioning==1.4.0",
 	]
 	build-backend = "poetry_dynamic_versioning.backend"
 
@@ -70,7 +70,7 @@
 	pywin32 = {version = ">=306,<400", platform = "win32"}
 
 [tool.poetry.dev-dependencies]
-	poetry-dynamic-versioning = {version = "1.2.0", extras = ["plugin"]}
+	poetry-dynamic-versioning = {version = "1.4.0", extras = ["plugin"]}
 	pre-commit = "^3.5"
 	types-pywin32 = {version = ">=306,<400", platform = "win32"}
 
