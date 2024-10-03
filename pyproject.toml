@@ -83,13 +83,9 @@
 	pytkdocs = {git = "https://github.com/nstockton/pytkdocs.git", rev = "9991d493b408c403ac5691074e2af2e509f22926"}
 
 [tool.poetry.group.lint.dependencies]
-	click = "8.0.4"  # Required by Tan.
-	flake8 = "5.0.4"
-	flake8-pyproject = "1.2.3"
 	isort = "^5.13"
-	jinja2 = "3.0.3"  # Required by Tan.
 	mypy = "^1.8"
-	tan = "^23.7"
+	ruff = "^0.6"
 
 [tool.poetry.group.test.dependencies]
 	coverage = {version = "^7.4", extras = ["toml"]}
@@ -107,13 +103,36 @@
 		"(^__version__(?:\\s*[:]\\s*str)?\\s*=\\s*['\"])[^'\"]*(['\"])",
 	]
 
-[tool.black]
-	use-tabs = true
-	safe = true
+[tool.ruff]
+	extend-include = [
+		"*.pyw",
+		"./pyinstaller_windows.spec",
+	]
+	force-exclude = true
 	line-length = 110
-	target-version = ["py38", "py39", "py310", "py311", "py312"]
-	exclude = '(/(\.eggs|\.git|\.mypy_cache|\.tox|\.venv|build|dist)|__pycache__)'
-	include = '/((src/speechlight|tests).*\.py[isw]?|com_server\.py)$'
+
+[tool.ruff.format]
+	docstring-code-format = false
+	indent-style = "tab"
+	line-ending = "cr-lf"
+
+[tool.ruff.lint]
+	extend-select = [
+		"B",  # Flake8-bugbear.
+		"C901",  # McCabe complexity.
+		"E501",  # Line too long.
+		"W",  # Pycodestyle warnings.
+	]
+	ignore = [
+		"I",  # ISort will handle imports instead of Ruff.
+		"W191",  # Indentation contains tabs.
+	]
+	unfixable = [
+		"B",  # Flake8-bugbear.
+	]
+
+[tool.ruff.lint.mccabe]
+	max-complexity = 15
 
 [tool.coverage.report]
 	precision = 0
@@ -133,60 +152,6 @@
 [tool.coverage.run]
 	source = ["speechlight"]
 	omit = ["src/speechlight/speech_libs/*"]
-
-[tool.flake8]
-	# Note that boolean values need to be inside strings. Flake8 will convert them.
-	# Plugins
-	# Note that for the moment flake8-tabs is out of date and doesn't work with the latest versions of flake8.
-	#use-flake8-tabs = "true"  # Uncomment when using flake8-tabs again.
-	# Not all checks are replaced by flake8-tabs, however, pycodestyle is still not compatible with tabs.
-	use-pycodestyle-indent = "false"
-	continuation-style = "hanging"
-	## The following are replaced by flake8-tabs plugin, reported as ET codes rather than E codes.
-	# E121, E122, E123, E126, E127, E128,
-	## The following (all disabled) are not replaced by flake8-tabs,
-	# E124 - Requires mixing spaces and tabs: Closing bracket does not match visual indentation.
-	# E125 - Does not take tabs into consideration: Continuation line with same indent as next logical line.
-	# E129 - Requires mixing spaces and tabs: Visually indented line with same indent as next logical line
-	# E131 - Requires mixing spaces and tabs: Continuation line unaligned for hanging indent
-	# E133 - Our preference handled by ET126: Closing bracket is missing indentation
-	# Reporting
-	statistics = "true"
-	doctests = "true"
-	show-source = "true"
-	# Options
-	max-complexity = 15
-	max-line-length = 110
-	# Final bracket should match indentation of the start of the line of the opening bracket
-	hang-closing = "false"
-	ignore = [
-		"E101",  # indentation contains mixed spaces and tabs (remove when using flake8-tabs again).
-		"E201",  # whitespace after '['. Seems to trigger even in string.
-		"E202",  # whitespace before ')'. Seems to trigger even in string.
-		"E203",  # whitespace before ':'. Caused by Black.
-		"E231",  # missing whitespace after ':'. Seems to trigger even in string.
-		"E241",  # multiple spaces after ','. Seems to trigger even in string.
-		"W191",  # indentation contains tabs
-		"W503",  # line break before binary operator. We want W504(line break after binary operator)
-		"ET113",  # (flake8-tabs) use of alignment as indentation, but option continuation-style=hanging does not permit this.
-		"ET121",  # (flake8-tabs) unexpected number of tabs at start of definition line. Caused by Black.
-	]
-	exclude = [
-		".git",
-		"__pycache__",
-		".env",
-		".venv",
-		"env",
-		"venv",
-		"env.bak",
-		"venv.bak",
-		"ENV",
-	]
-	filename = [
-		"*.py",
-		"*.pys",
-		"*.pyw",
-	]
 
 [tool.isort]
 	line_length = 110  # The max length of an import line (used for wrapping long imports).

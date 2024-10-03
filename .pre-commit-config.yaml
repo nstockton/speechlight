@@ -94,22 +94,22 @@ repos:
         require_serial: false  # Execute in parallel.
         stages: [pre-commit, pre-merge-commit]
         types: [python]
-      - id: tan
-        name: Tan
-        entry: "python -B -m black"
+      - id: lint
+        name: RuffCheck
+        entry: "python -B -m ruff check"
         language: system
-        pass_filenames: true  # Pass file names as positional arguments.
+        pass_filenames: false  # Do not pass file names as positional arguments.
         require_serial: true  # Execute using a single process.
         stages: [pre-commit, pre-merge-commit]
-        types: [python]
-      - id: flake8
-        name: Flake8
-        entry: "python -B -m flake8"
+        types_or: [python, spec]
+      - id: format
+        name: RuffFormat
+        entry: "python -B -m ruff format"
         language: system
-        pass_filenames: true  # Pass file names as positional arguments.
+        pass_filenames: false  # Do not pass file names as positional arguments.
         require_serial: true  # Execute using a single process.
         stages: [pre-commit, pre-merge-commit]
-        types: [python]
+        types_or: [python, spec]
       - id: mypy
         name: MyPy
         entry: "python -B -m mypy"
