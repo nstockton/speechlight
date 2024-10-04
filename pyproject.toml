@@ -121,6 +121,14 @@
 		"B",  # Flake8-bugbear.
 		"C901",  # McCabe complexity.
 		"E501",  # Line too long.
+		"N801",  # Class name should use CapWords convention.
+		"N804",  # First argument of a class method should be named cls.
+		"N805",  # First argument of a method should be named self.
+		"N818",  # Exception name should be named with an Error suffix.
+		"PERF",  # Perflint.
+		"RET",  # Flake8-return.
+		"RSE",  # Flake8-raise.
+		"SIM",  # Flake8-simplify.
 		"W",  # Pycodestyle warnings.
 	]
 	ignore = [

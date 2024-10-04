@@ -311,6 +311,6 @@ class Speech(BaseSpeech):
 		if self.nvda_running() or self.sa_running() or self.jfw_running():
 			# None of the screen reader APIs support retrieving speaking status.
 			return False
-		elif self.sapi is not None:
+		if self.sapi is not None:
 			return bool(self.sapi.Status.RunningState != 1)
 		return False
