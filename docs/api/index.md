@@ -7,5 +7,4 @@ Automatically generated API reference.
 * [Base Speech](base.md)
 * [Darwin Speech](darwin.md)
 * [Dummy Speech Module](dummy.md)
-* [Misc Utilities](utils.md)
 * [Windows Speech](windows.md)

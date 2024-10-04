@@ -17,7 +17,6 @@ nav:
       - base.py: api/base.md
       - darwin.py: api/darwin.md
       - dummy.py: api/dummy.md
-      - utils.py: api/utils.md
       - windows.py: api/windows.md
   - License: license.md
 
