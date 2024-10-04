@@ -66,6 +66,7 @@
 
 [tool.poetry.dependencies]
 	python = "^3.8"
+	knickknacks = {url = "https://github.com/nstockton/knickknacks/releases/download/v0.1.1/knickknacks-0.1.1-py3-none-any.whl"}
 	pyobjc = {version = "^10.0", platform = "darwin"}
 	pywin32 = {version = ">=306,<400", platform = "win32"}
 
@@ -193,6 +194,7 @@
 	import_heading_thirdparty = "Third-party Modules:"
 	# Override known third-party imports.
 	known_third_party = [
+		"knickknacks",
 		"pywin32",
 		"win32com",
 		"pywintypes",

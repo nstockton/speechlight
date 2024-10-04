@@ -10,15 +10,15 @@ from __future__ import annotations
 import platform
 import sys
 
-# Local Modules:
-from .utils import get_directory_path
+# Third-party Modules:
+from knickknacks.platforms import getDirectoryPath
 
 
 __version__: str = "0.0.0"
 
 
 SYSTEM_ARCHITECTURE: str = platform.architecture()[0]
-LIB_DIRECTORY: str = get_directory_path("speech_libs")
+LIB_DIRECTORY: str = getDirectoryPath("speech_libs")
 
 
 if sys.platform == "win32":  # pragma: no cover
