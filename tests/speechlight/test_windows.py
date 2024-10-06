@@ -45,7 +45,7 @@ class TestWindows(TestCase):
 			mock_jfw.return_value.RunFunction.assert_called_once_with(f'BrailleString("{self.text}")')
 
 	def test_jfw_running(self) -> None:
-		with mock.patch.object(self.speech, "find_window") as mock_find_window:
+		with mock.patch.object(self.speech, "_find_window") as mock_find_window:
 			mock_find_window.return_value = 0  # Not found.
 			self.assertFalse(self.speech.jfw_running())
 			mock_find_window.return_value = 1  # Found.
@@ -62,7 +62,7 @@ class TestWindows(TestCase):
 			mock_jfw.return_value.StopSpeech.assert_called_once()
 
 	def test_nvda_braille(self) -> None:
-		with mock.patch.object(self.speech, "nvda") as mock_nvda:
+		with mock.patch.object(self.speech, "_nvda") as mock_nvda:
 			self.speech.nvda_braille(self.text)
 			mock_nvda.nvdaController_brailleMessage.assert_called_once_with(self.text)
 
@@ -74,13 +74,13 @@ class TestWindows(TestCase):
 		mock_nvda_braille.assert_called_once_with(self.text)
 
 	def test_nvda_running(self) -> None:
-		with mock.patch.object(self.speech, "nvda") as mock_nvda:
+		with mock.patch.object(self.speech, "_nvda") as mock_nvda:
 			self.speech.nvda_running()
 			mock_nvda.nvdaController_testIfRunning.assert_called_once()
 
 	@mock.patch("speechlight.windows.Speech.nvda_silence")
 	def test_nvda_say(self, mock_nvda_silence: mock.Mock) -> None:
-		with mock.patch.object(self.speech, "nvda") as mock_nvda:
+		with mock.patch.object(self.speech, "_nvda") as mock_nvda:
 			self.speech.nvda_say(self.text)
 			mock_nvda.nvdaController_speakText.assert_called_once_with(self.text)
 			mock_nvda.reset_mock()
@@ -89,12 +89,12 @@ class TestWindows(TestCase):
 			mock_nvda.nvdaController_speakText.assert_called_once_with(self.text)
 
 	def test_nvda_silence(self) -> None:
-		with mock.patch.object(self.speech, "nvda") as mock_nvda:
+		with mock.patch.object(self.speech, "_nvda") as mock_nvda:
 			self.speech.nvda_silence()
 			mock_nvda.nvdaController_cancelSpeech.assert_called_once()
 
 	def test_sa_braille(self) -> None:
-		with mock.patch.object(self.speech, "sa") as mock_sa:
+		with mock.patch.object(self.speech, "_sa") as mock_sa:
 			self.speech.sa_braille(self.text)
 			mock_sa.SA_BrlShowTextW.assert_called_once_with(self.text)
 
@@ -106,13 +106,13 @@ class TestWindows(TestCase):
 		mock_sa_braille.assert_called_once_with(self.text)
 
 	def test_sa_running(self) -> None:
-		with mock.patch.object(self.speech, "sa") as mock_sa:
+		with mock.patch.object(self.speech, "_sa") as mock_sa:
 			self.speech.sa_running()
 			mock_sa.SA_IsRunning.assert_called_once()
 
 	@mock.patch("speechlight.windows.Speech.sa_silence")
 	def test_sa_say(self, mock_sa_silence: mock.Mock) -> None:
-		with mock.patch.object(self.speech, "sa") as mock_sa:
+		with mock.patch.object(self.speech, "_sa") as mock_sa:
 			self.speech.sa_say(self.text)
 			mock_sa.SA_SayW.assert_called_once_with(self.text)
 			mock_sa.reset_mock()
@@ -121,7 +121,7 @@ class TestWindows(TestCase):
 			mock_sa.SA_SayW.assert_called_once_with(self.text)
 
 	def test_sa_silence(self) -> None:
-		with mock.patch.object(self.speech, "sa") as mock_sa:
+		with mock.patch.object(self.speech, "_sa") as mock_sa:
 			self.speech.sa_silence()
 			mock_sa.SA_StopAudio.assert_called_once()
 

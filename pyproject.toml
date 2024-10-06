@@ -121,6 +121,8 @@
 	extend-select = [
 		"B",  # Flake8-bugbear.
 		"C901",  # McCabe complexity.
+		"D",  # Pydocstyle.
+		"D213",  # Multi-line docstring summary should start at the second line.
 		"E501",  # Line too long.
 		"N801",  # Class name should use CapWords convention.
 		"N804",  # First argument of a class method should be named cls.
@@ -133,6 +135,9 @@
 		"W",  # Pycodestyle warnings.
 	]
 	ignore = [
+		"D105",  # Missing docstring in magic method.
+		"D206",  # Docstring should be indented with spaces, not tabs.
+		"D212",  # Multi-line docstring summary should start at the first line.
 		"I",  # ISort will handle imports instead of Ruff.
 		"W191",  # Indentation contains tabs.
 	]
@@ -142,6 +147,13 @@
 
 [tool.ruff.lint.mccabe]
 	max-complexity = 15
+
+[tool.ruff.lint.per-file-ignores]
+	"**/__init__.py" = ["D1"]
+	"./tests/**" = ["D1"]
+
+[tool.ruff.lint.pydocstyle]
+	convention = "google"
 
 [tool.coverage.report]
 	precision = 0

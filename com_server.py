@@ -1,7 +1,9 @@
+"""COM server for Speechlight."""
+
+
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 
 # Future Modules:
 from __future__ import annotations
@@ -18,6 +20,8 @@ from speechlight import Speech
 
 
 class SpeechlightServer(Speech):
+	"""A COM server which exposes Speechlight."""
+
 	_public_methods_: list[str] = ["braille", "say", "silence", "output"]
 	_public_attrs_: list[str] = []
 	# You can generate a different clsid with pythoncom.CreateGuid()
@@ -26,6 +30,7 @@ class SpeechlightServer(Speech):
 	_reg_progid_: str = "speechlight"
 
 	def __init__(self) -> None:
+		"""Defines the constructor."""
 		super().__init__()
 
 

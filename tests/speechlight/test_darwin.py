@@ -33,7 +33,7 @@ class TestDarwin(TestCase):
 
 	@mock.patch("speechlight.darwin.Speech.silence")
 	def test_say(self, mock_silence: mock.Mock) -> None:
-		with mock.patch.object(self.speech, "darwin", mock.Mock()) as mock_darwin:
+		with mock.patch.object(self.speech, "_darwin", mock.Mock()) as mock_darwin:
 			self.speech.say(self.text)
 			mock_darwin.startSpeakingString_.assert_called_once_with(self.text)
 			mock_darwin.reset_mock()
@@ -42,12 +42,12 @@ class TestDarwin(TestCase):
 			mock_darwin.startSpeakingString_.assert_called_once_with(self.text)
 
 	def test_silence(self) -> None:
-		with mock.patch.object(self.speech, "darwin", mock.Mock()) as mock_darwin:
+		with mock.patch.object(self.speech, "_darwin", mock.Mock()) as mock_darwin:
 			self.speech.silence()
 			mock_darwin.stopSpeaking.assert_called_once()
 
 	def test_speaking(self) -> None:
-		with mock.patch.object(self.speech, "darwin", mock.Mock()) as mock_darwin:
+		with mock.patch.object(self.speech, "_darwin", mock.Mock()) as mock_darwin:
 			mock_darwin.isSpeaking.return_value = False
 			self.assertFalse(self.speech.speaking())
 			mock_darwin.isSpeaking.assert_called_once()
