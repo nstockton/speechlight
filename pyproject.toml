@@ -34,7 +34,6 @@
 		"Programming Language :: Python",
 		"Programming Language :: Python :: 3",
 		"Programming Language :: Python :: 3 :: Only",
-		"Programming Language :: Python :: 3.8",
 		"Programming Language :: Python :: 3.9",
 		"Programming Language :: Python :: 3.10",
 		"Programming Language :: Python :: 3.11",
@@ -65,7 +64,7 @@
 	exclude = []
 
 [tool.poetry.dependencies]
-	python = "^3.8"
+	python = "^3.9"
 	knickknacks = {url = "https://github.com/nstockton/knickknacks/releases/download/v0.1.1/knickknacks-0.1.1-py3-none-any.whl"}
 	pyobjc = {version = "^10.0", platform = "darwin"}
 	pywin32 = {version = ">=306,<400", platform = "win32"}
