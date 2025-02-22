@@ -191,19 +191,14 @@ wheels = [
 [[package]]
 name = "knickknacks"
 version = "0.5.0"
-source = { url = "https://github.com/nstockton/knickknacks/releases/download/v0.5.0/knickknacks-0.5.0-py3-none-any.whl" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
     { name = "typing-extensions", marker = "python_full_version < '3.12'" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/84/e7/f7649fb647f1347794fdfeaac221cf1d9213431944471cf855bb94f59ba1/knickknacks-0.5.0.tar.gz", hash = "sha256:f99c671d9d21907e79fce15287707b8859f0c0ba7909a35881563b2ac9af2a20", size = 369360 }
 wheels = [
-    { url = "https://github.com/nstockton/knickknacks/releases/download/v0.5.0/knickknacks-0.5.0-py3-none-any.whl", hash = "sha256:69513a1736e5bbce24771a5083bd9da317eed631aba5abfe99d11dea2b4cc7f5" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "backports-strenum", marker = "python_full_version < '3.11'", specifier = ">=1.3,<2.0" },
-    { name = "typing-extensions", marker = "python_full_version < '3.12'", specifier = ">=4.8,<5.0" },
+    { url = "https://files.pythonhosted.org/packages/d6/df/8e9348d312b15ca66029e5a609ccae7fb7af56c58fdec018a22aa5d75e61/knickknacks-0.5.0-py3-none-any.whl", hash = "sha256:ff69b4ccd8fad7d87ae8f0e72bdd017ef1880a2572282c7ee52577ef92c11326", size = 20597 },
 ]
 
 [[package]]
@@ -3302,7 +3297,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "knickknacks", url = "https://github.com/nstockton/knickknacks/releases/download/v0.5.0/knickknacks-0.5.0-py3-none-any.whl" },
+    { name = "knickknacks", specifier = ">=0.5.0,<0.6.0" },
     { name = "pyobjc", marker = "sys_platform == 'darwin'", specifier = ">=10.0,<11.0" },
     { name = "pywin32", marker = "sys_platform == 'win32'", specifier = ">=306,<400" },
 ]
