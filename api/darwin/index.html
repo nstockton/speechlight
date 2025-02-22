@@ -323,6 +323,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#speechlight.darwin.Speech.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#speechlight.darwin.Speech.braille" class="md-nav__link">
     braille()
   </a>
@@ -379,20 +386,6 @@
     <li class="md-nav__item">
       <a href="../dummy/" class="md-nav__link">
         dummy.py
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../utils/" class="md-nav__link">
-        utils.py
       </a>
     </li>
   
@@ -469,6 +462,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#speechlight.darwin.Speech.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#speechlight.darwin.Speech.braille" class="md-nav__link">
     braille()
   </a>
@@ -538,12 +538,11 @@
 
     <div class="doc doc-contents first">
 
+      <p>Darwin speech.</p>
 
 
 
   <div class="doc doc-children">
-
-
 
 
 
@@ -564,34 +563,43 @@
 
     <div class="doc doc-contents ">
 
+      <p>Implements Speech for Darwin.</p>
 
         <details class="quote">
           <summary>Source code in <code>speechlight/darwin.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">Speech</span><span class="p">(</span><span class="n">BaseSpeech</span><span class="p">):</span>
-	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-		<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">:</span>
-			<span class="c1"># Allocate and initialize the default TTS.</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">darwin</span> <span class="o">=</span> <span class="n">NSSpeechSynthesizer</span><span class="o">.</span><span class="n">alloc</span><span class="p">()</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">darwin</span> <span class="o">=</span> <span class="n">MockNSSpeechSynthesizer</span><span class="o">.</span><span class="n">alloc</span><span class="p">()</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+          <div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Speech</span><span class="p">(</span><span class="n">BaseSpeech</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Implements Speech for Darwin.&quot;&quot;&quot;</span>
 
-	<span class="k">def</span> <span class="nf">braille</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+	<span class="n">_darwin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;Defines the constructor.&quot;&quot;&quot;</span>
+		<span class="c1"># Allocate and initialize the default TTS.</span>
+		<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span> <span class="o">=</span> <span class="n">NSSpeechSynthesizer</span><span class="o">.</span><span class="n">alloc</span><span class="p">()</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+
+	<span class="k">def</span><span class="w"> </span><span class="nf">braille</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># NOQA: D102</span>
 		<span class="k">pass</span>
 
-	<span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">interrupt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">interrupt</span><span class="p">)</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">interrupt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># NOQA: D102</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">interrupt</span><span class="o">=</span><span class="n">interrupt</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">braille</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 
-	<span class="k">def</span> <span class="nf">say</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">interrupt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">interrupt</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">silence</span><span class="p">()</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">darwin</span><span class="o">.</span><span class="n">startSpeakingString_</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">say</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">interrupt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># NOQA: D102</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">interrupt</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">silence</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span><span class="o">.</span><span class="n">startSpeakingString_</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 
-	<span class="k">def</span> <span class="nf">silence</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">darwin</span><span class="o">.</span><span class="n">stopSpeaking</span><span class="p">()</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">silence</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># NOQA: D102</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span><span class="o">.</span><span class="n">stopSpeaking</span><span class="p">()</span>
 
-	<span class="k">def</span> <span class="nf">speaking</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-		<span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">darwin</span><span class="o">.</span><span class="n">isSpeaking</span><span class="p">())</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">speaking</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># NOQA: D102</span>
+		<span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">status</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span><span class="o">.</span><span class="n">isSpeaking</span><span class="p">())</span>
+		<span class="k">return</span> <span class="n">status</span>
 </code></pre></div>
         </details>
 
@@ -605,6 +613,37 @@
 
 
 
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="speechlight.darwin.Speech.__init__" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">Method</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+<a href="#speechlight.darwin.Speech.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Defines the constructor.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>speechlight/darwin.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Defines the constructor.&quot;&quot;&quot;</span>
+	<span class="c1"># Allocate and initialize the default TTS.</span>
+	<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">:</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span> <span class="o">=</span> <span class="n">NSSpeechSynthesizer</span><span class="o">.</span><span class="n">alloc</span><span class="p">()</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
@@ -643,7 +682,7 @@
 </table>
         <details class="quote">
           <summary>Source code in <code>speechlight/darwin.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">braille</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">braille</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># NOQA: D102</span>
 	<span class="k">pass</span>
 </code></pre></div>
         </details>
@@ -658,7 +697,7 @@
 
 
 <h3 id="speechlight.darwin.Speech.output" class="doc doc-heading">
-<code class="codehilite language-python"><span class="n">Method</span> <span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">interrupt</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="codehilite language-python"><span class="n">Method</span> <span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">interrupt</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 <a href="#speechlight.darwin.Speech.output" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -686,16 +725,16 @@
       </tr>
       <tr>
         <td><code>interrupt</code></td>
-        <td><code>Optional[bool]</code></td>
+        <td><code>bool</code></td>
         <td><p>True if the speech should be silenced before speaking.</p></td>
-        <td><code>None</code></td>
+        <td><code>False</code></td>
       </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>speechlight/darwin.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">interrupt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-	<span class="bp">self</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">interrupt</span><span class="p">)</span>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">interrupt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># NOQA: D102</span>
+	<span class="bp">self</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">interrupt</span><span class="o">=</span><span class="n">interrupt</span><span class="p">)</span>
 	<span class="bp">self</span><span class="o">.</span><span class="n">braille</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
         </details>
@@ -710,7 +749,7 @@
 
 
 <h3 id="speechlight.darwin.Speech.say" class="doc doc-heading">
-<code class="codehilite language-python"><span class="n">Method</span> <span class="n">say</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">interrupt</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="codehilite language-python"><span class="n">Method</span> <span class="n">say</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">interrupt</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 <a href="#speechlight.darwin.Speech.say" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -738,18 +777,19 @@
       </tr>
       <tr>
         <td><code>interrupt</code></td>
-        <td><code>Optional[bool]</code></td>
+        <td><code>bool</code></td>
         <td><p>True if the speech should be silenced before speaking.</p></td>
-        <td><code>None</code></td>
+        <td><code>False</code></td>
       </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>speechlight/darwin.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">say</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">interrupt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-	<span class="k">if</span> <span class="n">interrupt</span><span class="p">:</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">silence</span><span class="p">()</span>
-	<span class="bp">self</span><span class="o">.</span><span class="n">darwin</span><span class="o">.</span><span class="n">startSpeakingString_</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">say</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">interrupt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># NOQA: D102</span>
+	<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">interrupt</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">silence</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span><span class="o">.</span><span class="n">startSpeakingString_</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -774,8 +814,9 @@
 
         <details class="quote">
           <summary>Source code in <code>speechlight/darwin.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">silence</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-	<span class="bp">self</span><span class="o">.</span><span class="n">darwin</span><span class="o">.</span><span class="n">stopSpeaking</span><span class="p">()</span>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">silence</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># NOQA: D102</span>
+	<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span><span class="o">.</span><span class="n">stopSpeaking</span><span class="p">()</span>
 </code></pre></div>
         </details>
     </div>
@@ -815,8 +856,11 @@
 </table>
         <details class="quote">
           <summary>Source code in <code>speechlight/darwin.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">speaking</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-	<span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">darwin</span><span class="o">.</span><span class="n">isSpeaking</span><span class="p">())</span>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">speaking</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># NOQA: D102</span>
+	<span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+	<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="n">status</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_darwin</span><span class="o">.</span><span class="n">isSpeaking</span><span class="p">())</span>
+	<span class="k">return</span> <span class="n">status</span>
 </code></pre></div>
         </details>
     </div>
