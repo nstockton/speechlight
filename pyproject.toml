@@ -1,20 +1,22 @@
 [build-system]
-	requires = [
-		"poetry-core>=1.0.0",
-		"poetry-dynamic-versioning==1.4.0",
-	]
-	build-backend = "poetry_dynamic_versioning.backend"
+	requires = ["pdm-backend"]
+	build-backend = "pdm.backend"
 
-[tool.poetry]
+[project]
 	name = "speechlight"
-	version = "0.0.0"
+	authors = [
+		{name = "Nick Stockton", email = "nstockton@users.noreply.github.com"},
+	]
 	description = "A lightweight Python library providing a common interface to multiple TTS and screen reader APIs."
-	authors = ["Nick Stockton <nstockton@users.noreply.github.com>"]
-	license = "MPL-2.0"
+	license = {text = "MIT"}
 	readme = "README.md"
-	homepage = "https://github.com/nstockton/speechlight"
-	repository = "https://github.com/nstockton/speechlight"
-	documentation = "https://nstockton.github.io/speechlight"
+	requires-python = ">=3.9,<4.0"
+	dependencies = [
+		"knickknacks @ https://github.com/nstockton/knickknacks/releases/download/v0.5.0/knickknacks-0.5.0-py3-none-any.whl",
+		"pyobjc>=10.0,<11.0; sys_platform == \"darwin\"",
+		"pywin32>=306,<400; sys_platform == \"win32\"",
+	]
+	dynamic = ["version"]
 	keywords = [
 		"blind",
 		"braille",
@@ -38,6 +40,7 @@
 		"Programming Language :: Python :: 3.10",
 		"Programming Language :: Python :: 3.11",
 		"Programming Language :: Python :: 3.12",
+		"Programming Language :: Python :: 3.13",
 		"Programming Language :: Python :: Implementation",
 		"Programming Language :: Python :: Implementation :: CPython",
 		"Operating System :: MacOS",
@@ -54,59 +57,61 @@
 		"Topic :: Software Development :: Libraries",
 		"Topic :: Software Development :: Libraries :: Python Modules",
 	]
-	packages = [
-		{include = "speechlight", from = "src"},
+
+[project.urls]
+	homepage = "https://github.com/nstockton/speechlight"
+	repository = "https://github.com/nstockton/speechlight"
+	documentation = "https://nstockton.github.io/speechlight"
+
+[dependency-groups]
+	dev = [
+		"pre-commit>=3.5,<4.0",
+		"types-pywin32>=306,<400; sys_platform == \"win32\"",
 	]
-	include = [
-		{path = "tests/*", format = "sdist"},
-		{path = "poetry.lock", format = "sdist"},
+	docs = [
+		"jinja2==3.0.3",
+		"mkdocs==1.2.3",
+		"mkdocs-autorefs==0.3.1",
+		"mkdocs-material==8.1.3",
+		"mkdocs-material-extensions==1.0.3",
+		"mkdocstrings==0.17.0",
+		"pytkdocs @ git+https://github.com/nstockton/pytkdocs.git@9991d493b408c403ac5691074e2af2e509f22926",
 	]
-	exclude = []
-
-[tool.poetry.dependencies]
-	python = "^3.9"
-	knickknacks = {url = "https://github.com/nstockton/knickknacks/releases/download/v0.1.1/knickknacks-0.1.1-py3-none-any.whl"}
-	pyobjc = {version = "^10.0", platform = "darwin"}
-	pywin32 = {version = ">=306,<400", platform = "win32"}
-
-[tool.poetry.dev-dependencies]
-	poetry-dynamic-versioning = {version = "1.4.0", extras = ["plugin"]}
-	pre-commit = "^3.5"
-	types-pywin32 = {version = ">=306,<400", platform = "win32"}
-
-[tool.poetry.group.docs.dependencies]
-	mkdocs = "1.2.3"
-	mkdocs-autorefs = "0.3.1"
-	mkdocs-material = "8.1.3"
-	mkdocs-material-extensions = "1.0.3"
-	mkdocstrings = "0.17.0"
-	pytkdocs = {git = "https://github.com/nstockton/pytkdocs.git", rev = "9991d493b408c403ac5691074e2af2e509f22926"}
-
-[tool.poetry.group.lint.dependencies]
-	isort = "^5.13"
-	mypy = "^1.8"
-	ruff = "^0.6"
-
-[tool.poetry.group.test.dependencies]
-	coverage = {version = "^7.4", extras = ["toml"]}
-
-[tool.poetry-dynamic-versioning]
-	enable = true
-	vcs = "git"
-	format-jinja = "{% if distance == 0 %}{{ base }}{% else %}{{ base }}+{{ distance }}.g{{ commit|truncate(7,true,'') }}{% endif %}"
-
-[tool.poetry-dynamic-versioning.substitution]
-	files = [
-		"src/*.py", "src/*/__init__.py", "src/*/__version__.py", "src/*/_version.py",
+	lint = [
+		"isort>=5.13,<6.0",
+		"mypy>=1.14,<2.0",
+		"ruff>=0.9,<1.0",
 	]
-	patterns = [
-		"(^__version__(?:\\s*[:]\\s*str)?\\s*=\\s*['\"])[^'\"]*(['\"])",
+	test = [
+		"coverage[toml]>=7.6,<8.0",
 	]
+
+[tool.pdm.build]
+	package-dir = "src"
+	includes = [
+		"src/speechlight",
+	]
+	excludes = []
+	source-includes = [
+		"tests",
+		"uv.lock",
+	]
+
+[tool.pdm.version]
+	fallback_version = "0.0.0"
+	source = "scm"
+	tag_filter = "[vV][0-9]*"
+	tag_regex = '^(?:[vV])(?P<version>\d+\.\d+\.\d+)(?:.*)$'
+	write_to = "speechlight/_version.py"
+	write_template = "__version__: str = \"{}\"\r\n"
+
+[tool.uv]
+	default-groups = ["dev", "docs", "lint", "test"]
+	upgrade-package = ["speechlight"]
 
 [tool.ruff]
 	extend-include = [
 		"*.pyw",
-		"./pyinstaller_windows.spec",
 	]
 	force-exclude = true
 	line-length = 110
@@ -117,42 +122,60 @@
 	line-ending = "cr-lf"
 
 [tool.ruff.lint]
+	preview = true
+	# select = ["E4", "E7", "E9", "F"]  # The default.
+	select = ["ALL"]  # Enable all rules.
 	extend-select = [
-		"B",  # Flake8-bugbear.
-		"C901",  # McCabe complexity.
-		"D",  # Pydocstyle.
 		"D213",  # Multi-line docstring summary should start at the second line.
-		"E501",  # Line too long.
-		"N801",  # Class name should use CapWords convention.
-		"N804",  # First argument of a class method should be named cls.
-		"N805",  # First argument of a method should be named self.
-		"N818",  # Exception name should be named with an Error suffix.
-		"PERF",  # Perflint.
-		"RET",  # Flake8-return.
-		"RSE",  # Flake8-raise.
-		"SIM",  # Flake8-simplify.
-		"W",  # Pycodestyle warnings.
 	]
 	ignore = [
+		"ANN",  # Flake8-annotations. (We use MyPy for this)
+		"ARG",  # Flake8-unused-arguments.
+		"B019",  # Use of functools.lru_cache or functools.cache on methods can lead to memory leaks.
+		"COM812",  # Trailing comma missing. (Conflicts with formatter)
 		"D105",  # Missing docstring in magic method.
 		"D206",  # Docstring should be indented with spaces, not tabs.
 		"D212",  # Multi-line docstring summary should start at the first line.
-		"I",  # ISort will handle imports instead of Ruff.
+		"EM",  # Flake8-errmsg.
+		"G",  # Flake8-logging-format.
+		"I",  # ISort. (We use ISort package for this)
+		"PT",  # Flake8-pytest-style.
+		"T20",  # Flake8-print.
+		"TCH",  # Flake8-type-checking.
+		"TRY003",  # Avoid specifying long messages outside the exception class.
+		"UP007",  # Use X | Y for union type annotations. (I hate this syntax)
+		"UP045",  # Use X | Y for optional type annotations. (I hate this syntax)
 		"W191",  # Indentation contains tabs.
 	]
-	unfixable = [
-		"B",  # Flake8-bugbear.
-	]
+	typing-modules = ["knickknacks.typedef"]
+	unfixable = []
+
+[tool.ruff.lint.flake8-builtins]
+	# To stop Ruff complaining when a built-in name is used as a variable name, add the name to the list.
+	builtins-ignorelist = []
+
+[tool.ruff.lint.flake8-copyright]
+	author = "Nick Stockton"
+	min-file-size = 1  # Minimum file size (in bytes) in which to enforce copyright.
+
+[tool.ruff.lint.flake8-implicit-str-concat]
+	allow-multiline = false
 
 [tool.ruff.lint.mccabe]
 	max-complexity = 15
 
 [tool.ruff.lint.per-file-ignores]
 	"**/__init__.py" = ["D1"]
-	"./tests/**" = ["D1"]
+	"**/_version.py" = ["CPY001"]
+	"./tests/**" = ["D1", "PLR0913", "PLR0917"]
 
 [tool.ruff.lint.pydocstyle]
 	convention = "google"
+	ignore-decorators = ["typing.overload"]
+
+[tool.ruff.lint.ruff]
+	# Make it a violation to use a tuple in a subscript without parentheses.
+	parenthesize-tuple-in-subscript = true
 
 [tool.coverage.report]
 	precision = 0

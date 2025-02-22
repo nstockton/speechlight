@@ -1,7 +1,22 @@
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
+# Copyright (c) 2025 Nick Stockton
+# -----------------------------------------------------------------------------
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# -----------------------------------------------------------------------------
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# -----------------------------------------------------------------------------
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 # Future Modules:
 from __future__ import annotations
@@ -13,7 +28,7 @@ from unittest import TestCase, mock
 from speechlight.windows import SPF_ASYNC, SPF_IS_NOT_XML, SPF_PURGE_BEFORE_SPEAK, Speech
 
 
-class TestWindows(TestCase):
+class TestWindows(TestCase):  # NOQA: PLR0904
 	def setUp(self) -> None:
 		self.text: str = "This is a test."
 		self.speech: Speech = Speech()
@@ -53,7 +68,7 @@ class TestWindows(TestCase):
 
 	@mock.patch("speechlight.windows.Speech.jfw_output")
 	def test_jfw_say(self, mock_jfw_output: mock.Mock) -> None:
-		self.speech.jfw_say(self.text, True)
+		self.speech.jfw_say(self.text, interrupt=True)
 		mock_jfw_output.assert_called_once_with(self.text, speak=True, interrupt=True)
 
 	def test_jfw_silence(self) -> None:
@@ -69,8 +84,8 @@ class TestWindows(TestCase):
 	@mock.patch("speechlight.windows.Speech.nvda_braille")
 	@mock.patch("speechlight.windows.Speech.nvda_say")
 	def test_nvda_output(self, mock_nvda_say: mock.Mock, mock_nvda_braille: mock.Mock) -> None:
-		self.speech.nvda_output(self.text, True)
-		mock_nvda_say.assert_called_once_with(self.text, True)
+		self.speech.nvda_output(self.text, interrupt=True)
+		mock_nvda_say.assert_called_once_with(self.text, interrupt=True)
 		mock_nvda_braille.assert_called_once_with(self.text)
 
 	def test_nvda_running(self) -> None:
@@ -84,7 +99,7 @@ class TestWindows(TestCase):
 			self.speech.nvda_say(self.text)
 			mock_nvda.nvdaController_speakText.assert_called_once_with(self.text)
 			mock_nvda.reset_mock()
-			self.speech.nvda_say(self.text, True)
+			self.speech.nvda_say(self.text, interrupt=True)
 			mock_nvda_silence.assert_called_once()
 			mock_nvda.nvdaController_speakText.assert_called_once_with(self.text)
 
@@ -101,8 +116,8 @@ class TestWindows(TestCase):
 	@mock.patch("speechlight.windows.Speech.sa_braille")
 	@mock.patch("speechlight.windows.Speech.sa_say")
 	def test_sa_output(self, mock_sa_say: mock.Mock, mock_sa_braille: mock.Mock) -> None:
-		self.speech.sa_output(self.text, True)
-		mock_sa_say.assert_called_once_with(self.text, True)
+		self.speech.sa_output(self.text, interrupt=True)
+		mock_sa_say.assert_called_once_with(self.text, interrupt=True)
 		mock_sa_braille.assert_called_once_with(self.text)
 
 	def test_sa_running(self) -> None:
@@ -116,7 +131,7 @@ class TestWindows(TestCase):
 			self.speech.sa_say(self.text)
 			mock_sa.SA_SayW.assert_called_once_with(self.text)
 			mock_sa.reset_mock()
-			self.speech.sa_say(self.text, True)
+			self.speech.sa_say(self.text, interrupt=True)
 			mock_sa_silence.assert_called_once()
 			mock_sa.SA_SayW.assert_called_once_with(self.text)
 
@@ -130,7 +145,7 @@ class TestWindows(TestCase):
 			self.speech.sapi_say(self.text)
 			mock_sapi.return_value.Speak.assert_called_once_with(self.text, SPF_ASYNC | SPF_IS_NOT_XML)
 			mock_sapi.reset_mock()
-			self.speech.sapi_say(self.text, True)
+			self.speech.sapi_say(self.text, interrupt=True)
 			mock_sapi.return_value.Speak.assert_called_once_with(
 				self.text, SPF_ASYNC | SPF_PURGE_BEFORE_SPEAK | SPF_IS_NOT_XML
 			)
@@ -189,19 +204,19 @@ class TestWindows(TestCase):
 		mock_sapi_say: mock.Mock,
 	) -> None:
 		mock_nvda_running.return_value = True
-		self.speech.output(self.text, True)
+		self.speech.output(self.text, interrupt=True)
 		mock_nvda_running.return_value = False
 		mock_sa_running.return_value = True
-		self.speech.output(self.text, True)
+		self.speech.output(self.text, interrupt=True)
 		mock_sa_running.return_value = False
 		mock_jfw_running.return_value = True
-		self.speech.output(self.text, True)
+		self.speech.output(self.text, interrupt=True)
 		mock_jfw_running.return_value = False
-		self.speech.output(self.text, True)
-		mock_nvda_output.assert_called_once_with(self.text, True)
-		mock_sa_output.assert_called_once_with(self.text, True)
+		self.speech.output(self.text, interrupt=True)
+		mock_nvda_output.assert_called_once_with(self.text, interrupt=True)
+		mock_sa_output.assert_called_once_with(self.text, interrupt=True)
 		mock_jfw_output.assert_called_once_with(self.text, braille=True, speak=True, interrupt=True)
-		mock_sapi_say.assert_called_once_with(self.text, True)
+		mock_sapi_say.assert_called_once_with(self.text, interrupt=True)
 
 	@mock.patch("speechlight.windows.Speech.sapi_say")
 	@mock.patch("speechlight.windows.Speech.jfw_say")
@@ -221,19 +236,19 @@ class TestWindows(TestCase):
 		mock_sapi_say: mock.Mock,
 	) -> None:
 		mock_nvda_running.return_value = True
-		self.speech.say(self.text, True)
+		self.speech.say(self.text, interrupt=True)
 		mock_nvda_running.return_value = False
 		mock_sa_running.return_value = True
-		self.speech.say(self.text, True)
+		self.speech.say(self.text, interrupt=True)
 		mock_sa_running.return_value = False
 		mock_jfw_running.return_value = True
-		self.speech.say(self.text, True)
+		self.speech.say(self.text, interrupt=True)
 		mock_jfw_running.return_value = False
-		self.speech.say(self.text, True)
-		mock_nvda_say.assert_called_once_with(self.text, True)
-		mock_sa_say.assert_called_once_with(self.text, True)
-		mock_jfw_say.assert_called_once_with(self.text, True)
-		mock_sapi_say.assert_called_once_with(self.text, True)
+		self.speech.say(self.text, interrupt=True)
+		mock_nvda_say.assert_called_once_with(self.text, interrupt=True)
+		mock_sa_say.assert_called_once_with(self.text, interrupt=True)
+		mock_jfw_say.assert_called_once_with(self.text, interrupt=True)
+		mock_sapi_say.assert_called_once_with(self.text, interrupt=True)
 
 	@mock.patch("speechlight.windows.Speech.sapi_silence")
 	@mock.patch("speechlight.windows.Speech.jfw_silence")

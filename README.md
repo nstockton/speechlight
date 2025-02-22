@@ -12,7 +12,7 @@ A lightweight [Python][] library providing a common interface to multiple [TTS][
 
 ## License And Credits
 
-Speechlight is licensed under the terms of the [Mozilla Public License, version 2.0.][License Page]
+Speechlight is licensed under the terms of the [MIT License.][License Page]
 Speechlight was originally created by [Nick Stockton.][Nick Stockton GitHub]
 macOS support by Jacob Schmude.
 
@@ -32,8 +32,8 @@ Execute the following commands from the root directory of this repository to ins
 ```
 py -3 -m venv .venv
 .venv\Scripts\activate.bat
-pip install --upgrade --require-hashes --requirement requirements-poetry.txt
-poetry install --no-ansi
+pip install --upgrade --require-hashes --requirement requirements-uv.txt
+uv sync
 pre-commit install -t pre-commit
 pre-commit install -t pre-push
 ```
@@ -44,8 +44,8 @@ Execute the following commands from the root directory of this repository to ins
 ```
 python3 -m venv .venv
 source .venv/bin/activate
-pip install --upgrade --require-hashes --requirement requirements-poetry.txt
-poetry install --no-ansi
+pip install --upgrade --require-hashes --requirement requirements-uv.txt
+uv sync
 pre-commit install -t pre-commit
 pre-commit install -t pre-push
 ```

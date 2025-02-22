@@ -1,16 +1,30 @@
+# Copyright (c) 2025 Nick Stockton
+# -----------------------------------------------------------------------------
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# -----------------------------------------------------------------------------
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# -----------------------------------------------------------------------------
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 """Windows speech."""
-
-
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 # Future Modules:
 from __future__ import annotations
 
 # Built-in Modules:
 import ctypes
-import os
 import sys
 from contextlib import suppress
 from typing import Any, Optional
@@ -22,7 +36,7 @@ from .base import BaseSpeech
 
 if sys.platform == "win32":  # pragma: no cover
 	import win32com.client
-	from pywintypes import com_error as ComError
+	from pywintypes import com_error as ComError  # NOQA: N812
 
 
 # SAPI constants
@@ -31,7 +45,7 @@ SPF_PURGE_BEFORE_SPEAK: int = 2  # Purges all pending speak requests prior to th
 SPF_IS_NOT_XML: int = 16  # The input text will not be parsed for XML markup.
 
 
-class Speech(BaseSpeech):
+class Speech(BaseSpeech):  # NOQA: PLR0904
 	"""Implements Speech for Windows."""
 
 	_find_window: Optional[Any] = None
@@ -48,11 +62,9 @@ class Speech(BaseSpeech):
 			self._find_window.restype = ctypes.c_void_p
 			arch: str = "32" if SYSTEM_ARCHITECTURE == "32bit" else "64"
 			self._nvda: ctypes.WinDLL = ctypes.windll.LoadLibrary(
-				os.path.join(LIB_DIRECTORY, f"nvdaControllerClient{arch}.dll")
+				str(LIB_DIRECTORY / f"nvdaControllerClient{arch}.dll")
 			)
-			self._sa: ctypes.WinDLL = ctypes.windll.LoadLibrary(
-				os.path.join(LIB_DIRECTORY, f"SAAPI{arch}.dll")
-			)
+			self._sa: ctypes.WinDLL = ctypes.windll.LoadLibrary(str(LIB_DIRECTORY / f"SAAPI{arch}.dll"))
 			self._nvda.nvdaController_brailleMessage.argtypes = (ctypes.c_wchar_p,)
 			self._nvda.nvdaController_speakText.argtypes = (ctypes.c_wchar_p,)
 			self._sa.SA_BrlShowTextW.argtypes = (ctypes.c_wchar_p,)
@@ -86,9 +98,10 @@ class Speech(BaseSpeech):
 	def jfw_output(
 		self,
 		text: str,
-		braille: Optional[bool] = None,
-		speak: Optional[bool] = None,
-		interrupt: Optional[bool] = None,
+		*,
+		braille: bool = False,
+		speak: bool = False,
+		interrupt: bool = False,
 	) -> None:
 		"""
 		Outputs text using JFW.
@@ -118,7 +131,7 @@ class Speech(BaseSpeech):
 			status = bool(self._find_window("JFWUI2", None))
 		return status
 
-	def jfw_say(self, text: str, interrupt: Optional[bool] = None) -> None:
+	def jfw_say(self, text: str, *, interrupt: bool = False) -> None:
 		"""
 		Speak text using JFW.
 
@@ -144,7 +157,7 @@ class Speech(BaseSpeech):
 		if self._nvda is not None:
 			self._nvda.nvdaController_brailleMessage(text)
 
-	def nvda_output(self, text: str, interrupt: Optional[bool] = None) -> None:
+	def nvda_output(self, text: str, *, interrupt: bool = False) -> None:
 		"""
 		Outputs text using NVDA.
 
@@ -152,7 +165,7 @@ class Speech(BaseSpeech):
 			text: The output text.
 			interrupt: True if the speech should be silenced before speaking.
 		"""
-		self.nvda_say(text, interrupt)
+		self.nvda_say(text, interrupt=interrupt)
 		self.nvda_braille(text)
 
 	def nvda_running(self) -> bool:
@@ -167,7 +180,7 @@ class Speech(BaseSpeech):
 			status = bool(self._nvda.nvdaController_testIfRunning() == 0)
 		return status
 
-	def nvda_say(self, text: str, interrupt: Optional[bool] = None) -> None:
+	def nvda_say(self, text: str, *, interrupt: bool = False) -> None:
 		"""
 		Speak text using NVDA.
 
@@ -195,7 +208,7 @@ class Speech(BaseSpeech):
 		if self._sa is not None:
 			self._sa.SA_BrlShowTextW(text)
 
-	def sa_output(self, text: str, interrupt: Optional[bool] = None) -> None:
+	def sa_output(self, text: str, *, interrupt: bool = False) -> None:
 		"""
 		Outputs text using System Access.
 
@@ -203,7 +216,7 @@ class Speech(BaseSpeech):
 			text: The output text.
 			interrupt: True if the speech should be silenced before speaking.
 		"""
-		self.sa_say(text, interrupt)
+		self.sa_say(text, interrupt=interrupt)
 		self.sa_braille(text)
 
 	def sa_running(self) -> bool:
@@ -218,7 +231,7 @@ class Speech(BaseSpeech):
 			status = bool(self._sa.SA_IsRunning())
 		return status
 
-	def sa_say(self, text: str, interrupt: Optional[bool] = None) -> None:
+	def sa_say(self, text: str, *, interrupt: bool = False) -> None:
 		"""
 		Speak text using System Access.
 
@@ -236,7 +249,7 @@ class Speech(BaseSpeech):
 		if self._sa is not None:
 			self._sa.SA_StopAudio()
 
-	def sapi_say(self, text: str, interrupt: Optional[bool] = None) -> None:
+	def sapi_say(self, text: str, *, interrupt: bool = False) -> None:
 		"""
 		Speak text using SAPI.
 
@@ -263,25 +276,25 @@ class Speech(BaseSpeech):
 		elif self.jfw_running():
 			self.jfw_braille(text)
 
-	def output(self, text: str, interrupt: Optional[bool] = None) -> None:  # NOQA: D102
+	def output(self, text: str, *, interrupt: bool = False) -> None:  # NOQA: D102
 		if self.nvda_running():
-			self.nvda_output(text, interrupt)
+			self.nvda_output(text, interrupt=interrupt)
 		elif self.sa_running():
-			self.sa_output(text, interrupt)
+			self.sa_output(text, interrupt=interrupt)
 		elif self.jfw_running():
 			self.jfw_output(text, braille=True, speak=True, interrupt=interrupt)
 		else:
-			self.sapi_say(text, interrupt)
+			self.sapi_say(text, interrupt=interrupt)
 
-	def say(self, text: str, interrupt: Optional[bool] = None) -> None:  # NOQA: D102
+	def say(self, text: str, *, interrupt: bool = False) -> None:  # NOQA: D102
 		if self.nvda_running():
-			self.nvda_say(text, interrupt)
+			self.nvda_say(text, interrupt=interrupt)
 		elif self.sa_running():
-			self.sa_say(text, interrupt)
+			self.sa_say(text, interrupt=interrupt)
 		elif self.jfw_running():
-			self.jfw_say(text, interrupt)
+			self.jfw_say(text, interrupt=interrupt)
 		else:
-			self.sapi_say(text, interrupt)
+			self.sapi_say(text, interrupt=interrupt)
 
 	def silence(self) -> None:  # NOQA: D102
 		if self.nvda_running():

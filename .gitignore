@@ -129,4 +129,6 @@ dmypy.json
 .pyre/
 
 # Misc
+.pdm-build/
+_version.py
 *.ignore
