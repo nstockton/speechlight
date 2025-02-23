@@ -61,7 +61,7 @@ jobs:
           python -m venv .venv
           source ${{ matrix.activate_path }}
           python -m pip install --progress-bar off --upgrade --require-hashes --requirement requirements-uv.txt
-          uv sync
+          uv sync --frozen
       - name: Lint And Test
         run: |
           source ${{ matrix.activate_path }}
@@ -110,7 +110,7 @@ jobs:
           python -m venv .venv
           source ./.venv/bin/activate
           python -m pip install --progress-bar off --upgrade --require-hashes --requirement requirements-uv.txt
-          uv sync
+          uv sync --frozen
       - name: Build Wheel And Source Archive
         id: build_dist
         run: |
