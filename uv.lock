@@ -190,15 +190,15 @@ wheels = [
 
 [[package]]
 name = "knickknacks"
-version = "0.5.0"
+version = "0.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
     { name = "typing-extensions", marker = "python_full_version < '3.12'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/84/e7/f7649fb647f1347794fdfeaac221cf1d9213431944471cf855bb94f59ba1/knickknacks-0.5.0.tar.gz", hash = "sha256:f99c671d9d21907e79fce15287707b8859f0c0ba7909a35881563b2ac9af2a20", size = 369360 }
+sdist = { url = "https://files.pythonhosted.org/packages/f3/8e/a313788475d241e1faa5b4cdc5fb99b261e03d18a1f02828fbce85e8b584/knickknacks-0.6.0.tar.gz", hash = "sha256:6c0e3e41cefb85dac2ade30cb42fe1993bf6941cdc362c4601095c1877388e46", size = 54530 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d6/df/8e9348d312b15ca66029e5a609ccae7fb7af56c58fdec018a22aa5d75e61/knickknacks-0.5.0-py3-none-any.whl", hash = "sha256:ff69b4ccd8fad7d87ae8f0e72bdd017ef1880a2572282c7ee52577ef92c11326", size = 20597 },
+    { url = "https://files.pythonhosted.org/packages/4e/3a/b88e63acf99ce02d82ab6ad2aefd0416a2767b1ac3c52257e565c4998987/knickknacks-0.6.0-py3-none-any.whl", hash = "sha256:09e8a55439cb55df7a6c69a2c05cb8da2afc4c391e5611e9c28b04423c559f17", size = 24105 },
 ]
 
 [[package]]
@@ -3297,7 +3297,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "knickknacks", specifier = ">=0.5.0,<0.6.0" },
+    { name = "knickknacks", specifier = ">=0.6.0,<1.0.0" },
     { name = "pyobjc", marker = "sys_platform == 'darwin'", specifier = ">=10.0,<11.0" },
     { name = "pywin32", marker = "sys_platform == 'win32'", specifier = ">=306,<400" },
 ]
