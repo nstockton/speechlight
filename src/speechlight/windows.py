@@ -25,8 +25,9 @@ from __future__ import annotations
 
 # Built-in Modules:
 import ctypes
+import re
+import shutil
 import sys
-from contextlib import suppress
 from typing import Any, Optional
 
 # Local Modules:
@@ -35,7 +36,6 @@ from .base import BaseSpeech
 
 
 if sys.platform == "win32":  # pragma: no cover
-	import win32com.client
 	from pywintypes import com_error as ComError  # NOQA: N812
 
 
@@ -43,6 +43,51 @@ if sys.platform == "win32":  # pragma: no cover
 SPF_ASYNC: int = 1  # Specifies that the Speak call should be asynchronous.
 SPF_PURGE_BEFORE_SPEAK: int = 2  # Purges all pending speak requests prior to this speak call.
 SPF_IS_NOT_XML: int = 16  # The input text will not be parsed for XML markup.
+
+
+def dispatch(*args: Any, **kwargs: Any) -> Any:  # pragma: no cover
+	"""
+	Calls win32com.client.Dispatch with the supplied arguments.
+
+	If the call fails, then an attempt is made to clear the cache and try again.
+
+	Note:
+		https://stackoverflow.com/questions/33267002/why-am-i-suddenly-getting-a-no-attribute-clsidtopackagemap-error-with-win32com
+
+	Args:
+			*args: Positional arguments to be passed to win32com.client.Dispatch.
+			**kwargs: Key-word only arguments to be passed to win32com.client.Dispatch.
+
+	Returns:
+		The resulting COM reference.
+	"""
+	if sys.platform != "win32":
+		return None
+	try:
+		from win32com import client  # NOQA: PLC0415
+
+		app = client.Dispatch(*args, **kwargs)
+	except AttributeError:
+		# Remove cache and try again.
+		from win32com.client import gencache  # NOQA: PLC0415
+
+		if not hasattr(gencache, "GetGeneratePath"):
+			return None
+		cache_location = gencache.GetGeneratePath()
+		del gencache
+		modules = [m.__name__ for m in sys.modules.values()]
+		for module in modules:
+			if re.match(r"win32com\.(?:gen_py|client)\..+", module):
+				del sys.modules[module]
+		if "gen_py" in cache_location:
+			shutil.rmtree(cache_location, ignore_errors=True)
+		from win32com import client  # NOQA: PLC0415
+
+		app = client.Dispatch(*args, **kwargs)
+	except ComError:
+		return None
+	del client
+	return app
 
 
 class Speech(BaseSpeech):  # NOQA: PLR0904
@@ -73,17 +118,13 @@ class Speech(BaseSpeech):  # NOQA: PLR0904
 	@property
 	def sapi(self) -> Any:  # type: ignore[misc] # pragma: no cover
 		"""The SAPI COM object."""
-		if sys.platform == "win32":
-			with suppress(ComError):
-				self._sapi = win32com.client.Dispatch("SAPI.SpVoice")
+		self._sapi = dispatch("SAPI.SpVoice")
 		return self._sapi
 
 	@property
 	def jfw(self) -> Any:  # type: ignore[misc] # pragma: no cover
 		"""The JFW COM object."""
-		if sys.platform == "win32":
-			with suppress(ComError):
-				self._jfw = win32com.client.Dispatch("FreedomSci.JawsApi")
+		self._jfw = dispatch("FreedomSci.JawsApi")
 		return self._jfw
 
 	def jfw_braille(self, text: str) -> None:
