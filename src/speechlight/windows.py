@@ -61,32 +61,32 @@ def dispatch(*args: Any, **kwargs: Any) -> Any:  # pragma: no cover
 	Returns:
 		The resulting COM reference.
 	"""
-	if sys.platform != "win32":
-		return None
-	try:
-		from win32com import client  # NOQA: PLC0415
+	app = None
+	if sys.platform == "win32":
+		try:
+			from win32com import client  # NOQA: PLC0415
 
-		app = client.Dispatch(*args, **kwargs)
-	except AttributeError:
-		# Remove cache and try again.
-		from win32com.client import gencache  # NOQA: PLC0415
+			app = client.Dispatch(*args, **kwargs)
+		except AttributeError:
+			# Remove cache and try again.
+			from win32com.client import gencache  # NOQA: PLC0415
 
-		if not hasattr(gencache, "GetGeneratePath"):
+			if not hasattr(gencache, "GetGeneratePath"):
+				return None
+			cache_location = gencache.GetGeneratePath()
+			del gencache
+			modules = [m.__name__ for m in sys.modules.values()]
+			for module in modules:
+				if re.match(r"win32com\.(?:gen_py|client)\..+", module):
+					del sys.modules[module]
+			if "gen_py" in cache_location:
+				shutil.rmtree(cache_location, ignore_errors=True)
+			from win32com import client  # NOQA: PLC0415
+
+			app = client.Dispatch(*args, **kwargs)
+		except ComError:
 			return None
-		cache_location = gencache.GetGeneratePath()
-		del gencache
-		modules = [m.__name__ for m in sys.modules.values()]
-		for module in modules:
-			if re.match(r"win32com\.(?:gen_py|client)\..+", module):
-				del sys.modules[module]
-		if "gen_py" in cache_location:
-			shutil.rmtree(cache_location, ignore_errors=True)
-		from win32com import client  # NOQA: PLC0415
-
-		app = client.Dispatch(*args, **kwargs)
-	except ComError:
-		return None
-	del client
+		del client
 	return app
 
 
