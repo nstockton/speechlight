@@ -530,6 +530,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#speechlight.windows.dispatch" class="md-nav__link">
+    dispatch()
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -774,6 +781,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#speechlight.windows.dispatch" class="md-nav__link">
+    dispatch()
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -864,17 +878,13 @@
 	<span class="nd">@property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">sapi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># type: ignore[misc] # pragma: no cover</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;The SAPI COM object.&quot;&quot;&quot;</span>
-		<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
-			<span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="n">ComError</span><span class="p">):</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">_sapi</span> <span class="o">=</span> <span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Dispatch</span><span class="p">(</span><span class="s2">&quot;SAPI.SpVoice&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_sapi</span> <span class="o">=</span> <span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;SAPI.SpVoice&quot;</span><span class="p">)</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sapi</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">jfw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># type: ignore[misc] # pragma: no cover</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;The JFW COM object.&quot;&quot;&quot;</span>
-		<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
-			<span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="n">ComError</span><span class="p">):</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">_jfw</span> <span class="o">=</span> <span class="n">win32com</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Dispatch</span><span class="p">(</span><span class="s2">&quot;FreedomSci.JawsApi&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_jfw</span> <span class="o">=</span> <span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;FreedomSci.JawsApi&quot;</span><span class="p">)</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jfw</span>
 
 	<span class="k">def</span><span class="w"> </span><span class="nf">jfw_braille</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -2322,6 +2332,120 @@
 
   </div>
 
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="speechlight.windows.dispatch" class="doc doc-heading">
+<code class="codehilite language-python"><span class="n">Function</span> <span class="n">dispatch</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#speechlight.windows.dispatch" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Calls win32com.client.Dispatch with the supplied arguments.</p>
+<p>If the call fails, then an attempt is made to clear the cache and try again.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="codehilite"><pre><span></span><code>https://stackoverflow.com/questions/33267002/why-am-i-suddenly-getting-a-no-attribute-clsidtopackagemap-error-with-win32com
+</code></pre></div>
+
+</div>
+
+<p><strong>Parameters:</strong></p>
+<table role="grid" class="data">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>*args</code></td>
+        <td><code>Any</code></td>
+        <td><p>Positional arguments to be passed to win32com.client.Dispatch.</p></td>
+        <td><code>()</code></td>
+      </tr>
+      <tr>
+        <td><code>**kwargs</code></td>
+        <td><code>Any</code></td>
+        <td><p>Key-word only arguments to be passed to win32com.client.Dispatch.</p></td>
+        <td><code>{}</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table role="grid" class="data">
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Any</code></td>
+      <td><p>The resulting COM reference.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>speechlight/windows.py</code></summary>
+          <div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">dispatch</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Calls win32com.client.Dispatch with the supplied arguments.</span>
+
+<span class="sd">	If the call fails, then an attempt is made to clear the cache and try again.</span>
+
+<span class="sd">	Note:</span>
+<span class="sd">		https://stackoverflow.com/questions/33267002/why-am-i-suddenly-getting-a-no-attribute-clsidtopackagemap-error-with-win32com</span>
+
+<span class="sd">	Args:</span>
+<span class="sd">			*args: Positional arguments to be passed to win32com.client.Dispatch.</span>
+<span class="sd">			**kwargs: Key-word only arguments to be passed to win32com.client.Dispatch.</span>
+
+<span class="sd">	Returns:</span>
+<span class="sd">		The resulting COM reference.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">app</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="kn">from</span><span class="w"> </span><span class="nn">win32com</span><span class="w"> </span><span class="kn">import</span> <span class="n">client</span>  <span class="c1"># NOQA: PLC0415</span>
+
+			<span class="n">app</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">Dispatch</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+		<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+			<span class="c1"># Remove cache and try again.</span>
+			<span class="kn">from</span><span class="w"> </span><span class="nn">win32com.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">gencache</span>  <span class="c1"># NOQA: PLC0415</span>
+
+			<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">gencache</span><span class="p">,</span> <span class="s2">&quot;GetGeneratePath&quot;</span><span class="p">):</span>
+				<span class="k">return</span> <span class="kc">None</span>
+			<span class="n">cache_location</span> <span class="o">=</span> <span class="n">gencache</span><span class="o">.</span><span class="n">GetGeneratePath</span><span class="p">()</span>
+			<span class="k">del</span> <span class="n">gencache</span>
+			<span class="n">modules</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+			<span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;win32com\.(?:gen_py|client)\..+&quot;</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+					<span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module</span><span class="p">]</span>
+			<span class="k">if</span> <span class="s2">&quot;gen_py&quot;</span> <span class="ow">in</span> <span class="n">cache_location</span><span class="p">:</span>
+				<span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">cache_location</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="kn">from</span><span class="w"> </span><span class="nn">win32com</span><span class="w"> </span><span class="kn">import</span> <span class="n">client</span>  <span class="c1"># NOQA: PLC0415</span>
+
+			<span class="n">app</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">Dispatch</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+		<span class="k">except</span> <span class="n">ComError</span><span class="p">:</span>
+			<span class="k">return</span> <span class="kc">None</span>
+		<span class="k">del</span> <span class="n">client</span>
+	<span class="k">return</span> <span class="n">app</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
