@@ -101,7 +101,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12.7"
+          python-version: "3.12.12"
           # Optional - x64 or x86 architecture, defaults to x64.
           architecture: x64
       - name: Install dependencies
