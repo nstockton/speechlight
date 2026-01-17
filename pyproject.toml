@@ -14,7 +14,7 @@
 	dependencies = [
 		"knickknacks>=0.6.0,<1.0.0",
 		"pyobjc>=10.0,<11.0; sys_platform == \"darwin\"",
-		"pywin32>=306,<400; sys_platform == \"win32\"",
+		"pywin32>=311,<400; sys_platform == \"win32\"",
 	]
 	dynamic = ["version"]
 	keywords = [
@@ -41,6 +41,7 @@
 		"Programming Language :: Python :: 3.11",
 		"Programming Language :: Python :: 3.12",
 		"Programming Language :: Python :: 3.13",
+		"Programming Language :: Python :: 3.14",
 		"Programming Language :: Python :: Implementation",
 		"Programming Language :: Python :: Implementation :: CPython",
 		"Operating System :: MacOS",
