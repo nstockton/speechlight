@@ -25,7 +25,7 @@ from __future__ import annotations
 
 # Built-in Modules:
 import sys
-from typing import Any, Optional
+from typing import Any
 
 # Local Modules:
 from .base import BaseSpeech
@@ -38,7 +38,7 @@ if sys.platform == "darwin":  # pragma: no cover
 class Speech(BaseSpeech):
 	"""Implements Speech for Darwin."""
 
-	_darwin: Optional[Any] = None
+	_darwin: Any | None = None
 
 	def __init__(self) -> None:  # pragma: no cover
 		"""Defines the constructor."""

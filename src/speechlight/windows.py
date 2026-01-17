@@ -28,7 +28,7 @@ import ctypes
 import re
 import shutil
 import sys
-from typing import Any, Optional
+from typing import Any
 
 # Local Modules:
 from . import LIB_DIRECTORY, SYSTEM_ARCHITECTURE
@@ -93,11 +93,11 @@ def dispatch(*args: Any, **kwargs: Any) -> Any:  # pragma: no cover
 class Speech(BaseSpeech):  # NOQA: PLR0904
 	"""Implements Speech for Windows."""
 
-	_find_window: Optional[Any] = None
-	_nvda: Optional[Any] = None
-	_sa: Optional[Any] = None
-	_sapi: Optional[Any] = None
-	_jfw: Optional[Any] = None
+	_find_window: Any | None = None
+	_nvda: Any | None = None
+	_sa: Any | None = None
+	_sapi: Any | None = None
+	_jfw: Any | None = None
 
 	def __init__(self) -> None:  # pragma: no cover
 		"""Defines the constructor."""
