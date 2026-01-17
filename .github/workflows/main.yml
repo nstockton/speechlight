@@ -20,7 +20,7 @@ jobs:
       max-parallel: 4
       matrix:
         os: [ubuntu-24.04, macos-13, windows-2022]
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
         include:
           - os: ubuntu-24.04
             activate_path: ./.venv/bin/activate
@@ -71,7 +71,6 @@ jobs:
           python -m pre_commit run --all-files --show-diff-on-failure --hook-stage push
           uv build
       - name: Test Documentation
-        if: contains(fromJson('["3.10", "3.11", "3.12", "3.13", "3.14"]'), matrix.python-version)
         run: |
           source ${{ matrix.activate_path }}
           python -m pre_commit run --all-files --show-diff-on-failure --hook-stage manual

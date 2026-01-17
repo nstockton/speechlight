@@ -10,7 +10,7 @@
 	description = "A lightweight Python library providing a common interface to multiple TTS and screen reader APIs."
 	license = {text = "MIT"}
 	readme = "README.md"
-	requires-python = ">=3.9,<4.0"
+	requires-python = ">=3.10,<4.0"
 	dependencies = [
 		"knickknacks>=0.6.0,<1.0.0",
 		"pyobjc>=10.0,<11.0; sys_platform == \"darwin\"",
@@ -36,7 +36,6 @@
 		"Programming Language :: Python",
 		"Programming Language :: Python :: 3",
 		"Programming Language :: Python :: 3 :: Only",
-		"Programming Language :: Python :: 3.9",
 		"Programming Language :: Python :: 3.10",
 		"Programming Language :: Python :: 3.11",
 		"Programming Language :: Python :: 3.12",
