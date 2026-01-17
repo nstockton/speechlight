@@ -19,14 +19,14 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        os: [ubuntu-24.04, macos-15-intel, windows-2022]
+        os: [ubuntu-24.04, macos-15-intel, windows-2025]
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
         include:
           - os: ubuntu-24.04
             activate_path: ./.venv/bin/activate
           - os: macos-15-intel
             activate_path: ./.venv/bin/activate
-          - os: windows-2022
+          - os: windows-2025
             activate_path: ./.venv/Scripts/activate
     runs-on: ${{ matrix.os }}
     defaults:
