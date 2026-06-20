@@ -38,20 +38,20 @@ jobs:
           echo "ImageOS=${ImageOS}" >> "$GITHUB_ENV"
           echo "ImageVersion=${ImageVersion}" >> "$GITHUB_ENV"
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0 # All history for all branches and tags.
           submodules: 'recursive' # All submodules.
       - name: Setup Python ${{ matrix.python-version }}
         id: setup_python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           # Optional - x64 or x86 architecture, defaults to x64.
           architecture: x64
       - name: Cache virtualenv
         id: cache_virtualenv
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           key: venv-${{ env.ImageOS }}${{ runner.arch }}-${{ env.ImageVersion }}-py${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('**/requirements-uv.txt', '**/uv.lock') }}
           path: .venv
@@ -65,10 +65,10 @@ jobs:
       - name: Lint And Test
         run: |
           source ${{ matrix.activate_path }}
-          python -m pre_commit install -t pre-commit
-          python -m pre_commit install -t pre-push
-          python -m pre_commit run --all-files --show-diff-on-failure --hook-stage commit
-          python -m pre_commit run --all-files --show-diff-on-failure --hook-stage push
+          python -m prek install -t pre-commit
+          python -m prek install -t pre-push
+          python -m prek run --all-files --show-diff-on-failure --hook-stage pre-commit
+          python -m pre_commit run --all-files --show-diff-on-failure --hook-stage pre-push
           uv build
       - name: Test Documentation
         run: |
@@ -86,7 +86,7 @@ jobs:
         shell: bash
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0 # All history for all branches and tags.
           submodules: 'recursive' # All submodules.
@@ -99,7 +99,7 @@ jobs:
           echo "name=${NAME}" >> $GITHUB_OUTPUT
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12.12"
           # Optional - x64 or x86 architecture, defaults to x64.
@@ -117,7 +117,7 @@ jobs:
           uv build
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }} # Automatically provided by Actions.
           name: ${{ steps.project_info.outputs.name }} Version ${{ steps.project_info.outputs.version }}
