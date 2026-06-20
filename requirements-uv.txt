@@ -3,24 +3,25 @@
 # To update, run:
 #
 #    poetry config warnings.export false
-#    pip-compile-cross-platform --generate-hashes --min-python-version 3.9 -o requirements-uv.txt requirements-uv.in
+#    pip-compile-cross-platform --generate-hashes --min-python-version 3.10 -o requirements-uv.txt requirements-uv.in
 #
-uv==0.6.2 ; python_version >= "3.9" and python_version < "4.0" \
-    --hash=sha256:0f1e8e15c92607862e72e0467a31947af7b9aef93924072e9b4d5dcb5633d374 \
-    --hash=sha256:1db90b728a173926e2018b89df776a373b1e50520466f61e0dbf05f9a64a6db5 \
-    --hash=sha256:27ecb8f6ef796220062f31a12e2dc5dc7a14704aa1df0da2dfa3530346c7e3cc \
-    --hash=sha256:2c13ca920d87dc00721a86ac3d19667cff5435b369d21e3d6df76b373d8fa8df \
-    --hash=sha256:326aff8c4fb8153e2384e79904c27b1c9d4c3a5879b53a6fbc2da3283fda321d \
-    --hash=sha256:52b7452f4c523b9875de53ba73df87acd1cdea36640281d0d80c8074eda42f16 \
-    --hash=sha256:5337cdb6ecc604d0cf36fe6799dd0479111b606009e6c29685d213c74eb40373 \
-    --hash=sha256:7dd26dabd918e5648ecf94fb7c0787db954237e34ea3bdd944b98d007b44c3a5 \
-    --hash=sha256:9e2e421947ef889e6c8913992c560d611826464eabc78f8f702a5eff824aabc7 \
-    --hash=sha256:b435687e5c26a64858ea842fbb4b35ced8e8741a99d1b75d0c0143462e956db9 \
-    --hash=sha256:b8763f310a473f46c0226f5e08a876bd34de121ac370cc7294a5397a13a18d8a \
-    --hash=sha256:d23fb9cd41aecb31845e884d0bfde243e04e763abeab3532138321b4ebe7437c \
-    --hash=sha256:d501ae16fb33969b12a64ac7b9c49d672b8c3964026c5dcaee3b1dcd50a6a22c \
-    --hash=sha256:d696a4f3d4a3ac1b305255e8814ae3a147ea3428a977bb3b4335a339941799bc \
-    --hash=sha256:df0a1d95fd1539c05de434259fafcee0b6852900d4178e94b3b6b6b06438b60c \
-    --hash=sha256:f24e119d338bae32b5a604585b7b518036fba556e2c2d9dbd2d7cf1411213b57 \
-    --hash=sha256:f2f0dc9a0564b31d4efdee317c176a23bbe7e61aec6d281a331ba6ae32f828ff \
-    --hash=sha256:f3719da2e59403783eab634a6238b90051fc65379e02c10b9ca1b32b26d35f77
+uv==0.11.3 ; python_version >= "3.10" and python_version < "4.0" \
+    --hash=sha256:088165b9eed981d2c2a58566cc75dd052d613e47c65e2416842d07308f793a6f \
+    --hash=sha256:089b9d338a64463956b6fee456f03f73c9a916479bdb29009600781dc1e1d2a7 \
+    --hash=sha256:0fde893b5ab9f6997fe357138e794bac09d144328052519fbbe2e6f72145e457 \
+    --hash=sha256:3b1fe09d5e1d8e19459cd28d7825a3b66ef147b98328345bad6e17b87c4fea48 \
+    --hash=sha256:3ff461335888336467402cc5cb792c911df95dd0b52e369182cfa4c902bb21f4 \
+    --hash=sha256:45006bcd9e8718248a23ab81448a5beb46a72a9dd508e3212d6f3b8c63aeb88a \
+    --hash=sha256:55ba578752f29a3f2b22879b22a162edad1454e3216f3ca4694fdbd4093a6822 \
+    --hash=sha256:6708827ecb846d00c5512a7e4dc751c2e27b92e9bd55a0be390561ac68930c32 \
+    --hash=sha256:68fda574f2e5e7536a2b747dcea88329a71aad7222317e8f4717d0af8f99fbd4 \
+    --hash=sha256:6a6fcaf1fec28bbbdf0dfc5a0a6e34be4cea08c6287334b08c24cf187300f20d \
+    --hash=sha256:71f5d0b9e73daa5d8a7e2db3fa2e22a4537d24bb4fe78130db797280280d4edc \
+    --hash=sha256:794aae3bab141eafbe37c51dc5dd0139658a755a6fa9cc74d2dbd7c71dcc4826 \
+    --hash=sha256:8df030ea7563e99c09854e1bc82ab743dfa2d0ba18976e6861979cb40d04dba7 \
+    --hash=sha256:92ffc4d521ab2c4738ef05d8ef26f2750e26d31f3ad5611cdfefc52445be9ace \
+    --hash=sha256:a62e29277efd39c35caf4a0fe739c4ebeb14d4ce4f02271f3f74271d608061ff \
+    --hash=sha256:d2b3b0fa1693880ca354755c216ae1c65dd938a4f1a24374d0c3f4b9538e0ee6 \
+    --hash=sha256:deb533e780e8181e0859c68c84f546620072cd1bd827b38058cb86ebfba9bb7d \
+    --hash=sha256:ebccdcdebd2b288925f0f7c18c39705dc783175952eacaf94912b01d3b381b86 \
+    --hash=sha256:ef0ae8ee2988928092616401ec7f473612b8e9589fe1567452c45dbc56840f85

@@ -1,7 +1,7 @@
 # Apply to all files without commiting:
-# python -B -m pre_commit run --all-files
+# python -B -m prek run --all-files
 # Update this file:
-# python -B -m pre_commit autoupdate
+# python -B -m prek autoupdate
 exclude: '^$'
 fail_fast: false
 default_language_version:
@@ -16,11 +16,23 @@ repos:
       - id: check-case-conflict
         name: Check for case-insensitive file name conflicts
         stages: [commit]
+      - id: check-executables-have-shebangs
+        name: Check non-binary executables have a proper shebang
+        stages: [commit]
+      - id: check-json
+        name: Check json files for parseable syntax
+        stages: [commit]
       - id: check-merge-conflict
         name: Check merge conflicts are not being committed
         stages: [commit]
+      - id: check-shebang-scripts-are-executable
+        name: Check non-binary files with a shebang are marked executable
+        stages: [commit]
       - id: check-toml
         name: Check toml files for parseable syntax
+        stages: [commit]
+      - id: check-xml
+        name: Check xml files for parseable syntax
         stages: [commit]
       - id: check-yaml
         name: Check yaml files for parseable syntax

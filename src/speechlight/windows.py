@@ -116,13 +116,13 @@ class Speech(BaseSpeech):  # NOQA: PLR0904
 			self._sa.SA_SayW.argtypes = (ctypes.c_wchar_p,)
 
 	@property
-	def sapi(self) -> Any:  # type: ignore[misc] # pragma: no cover
+	def sapi(self) -> Any:  # pragma: no cover
 		"""The SAPI COM object."""
 		self._sapi = dispatch("SAPI.SpVoice")
 		return self._sapi
 
 	@property
-	def jfw(self) -> Any:  # type: ignore[misc] # pragma: no cover
+	def jfw(self) -> Any:  # pragma: no cover
 		"""The JFW COM object."""
 		self._jfw = dispatch("FreedomSci.JawsApi")
 		return self._jfw
