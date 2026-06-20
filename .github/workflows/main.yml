@@ -68,12 +68,12 @@ jobs:
           python -m prek install -t pre-commit
           python -m prek install -t pre-push
           python -m prek run --all-files --show-diff-on-failure --hook-stage pre-commit
-          python -m pre_commit run --all-files --show-diff-on-failure --hook-stage pre-push
+          python -m prek run --all-files --show-diff-on-failure --hook-stage pre-push
           uv build
       - name: Test Documentation
         run: |
           source ${{ matrix.activate_path }}
-          python -m pre_commit run --all-files --show-diff-on-failure --hook-stage manual
+          python -m prek run --all-files --show-diff-on-failure --hook-stage manual
   deploy:
     needs: build
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
