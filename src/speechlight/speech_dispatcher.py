@@ -149,10 +149,10 @@ class Speech(BaseSpeech):
 	"""Implements Speech for Speech Dispatcher."""
 
 	_sd: SSIPClientType | None = None
-	_event_types: tuple[str, ...]
 
 	def __init__(self) -> None:  # pragma: no cover
 		"""Defines the constructor."""
+		self._event_types: tuple[str, ...] = ()
 		if sys.platform == "linux":  # pragma: no cover
 			with suppress(NameError):
 				self._sd = speechd.SSIPClient("speechlight")
@@ -162,8 +162,6 @@ class Speech(BaseSpeech):
 					speechd.CallbackType.CANCEL,
 					speechd.CallbackType.END,
 				)
-		else:
-			self._event_types = ()
 		self._is_speaking: bool = False
 
 	def _speak_callback(self, event_type: str, *, index_mark: str | None = None) -> None:
