@@ -43,6 +43,8 @@ if sys.platform == "win32":  # pragma: no cover
 	from .windows import Speech
 elif sys.platform == "darwin":  # pragma: no cover
 	from .darwin import Speech
+elif sys.platform == "linux":  # pragma: no cover
+	from .speech_dispatcher import Speech
 else:  # pragma: no cover
 	from .dummy import Speech
 speech: Speech = Speech()
