@@ -23,12 +23,14 @@
 from __future__ import annotations
 
 # Built-in Modules:
+import io
 from unittest import TestCase, mock
 
 # Speechlight Modules:
 from speechlight.speech_dispatcher import Speech
 
 
+@mock.patch("speechlight.speech_dispatcher.sys.stdout", io.StringIO())  # Prevent output from print.
 class TestSpeechDispatcher(TestCase):
 	def setUp(self) -> None:
 		self.text: str = "This is a test."
