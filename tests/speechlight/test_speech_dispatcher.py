@@ -30,7 +30,7 @@ from unittest import TestCase, mock
 from speechlight.speech_dispatcher import Speech
 
 
-@mock.patch("speechlight.speech_dispatcher.sys.stdout", io.StringIO())  # Prevent output from print.
+@mock.patch("speechlight.speech_dispatcher.sys.stderr", io.StringIO())  # Prevent output from print.
 class TestSpeechDispatcher(TestCase):
 	def setUp(self) -> None:
 		self.text: str = "This is a test."
