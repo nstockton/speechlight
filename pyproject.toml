@@ -110,6 +110,7 @@
 	upgrade-package = ["speechlight"]
 
 [tool.ruff]
+	output-format = "concise"
 	extend-include = [
 		"*.pyw",
 	]
