@@ -27,7 +27,6 @@ from __future__ import annotations
 # Built-in Modules:
 import sys
 from collections.abc import Iterable
-from contextlib import suppress
 from typing import Protocol, TypeAlias
 
 # Local Modules:
@@ -35,11 +34,7 @@ from .base import BaseSpeech
 
 
 if sys.platform == "linux":  # pragma: no cover
-	try:
-		import speechd
-	except ImportError:  # pragma: no cover
-		print("ERROR: speechd Python module not found.", file=sys.stderr)
-		print("Install python3-speechd or equivalent package.", file=sys.stderr)
+	import speechd
 
 
 SDListVoicesType: TypeAlias = tuple[tuple[str, str | None, str | None], ...]
@@ -153,16 +148,15 @@ class Speech(BaseSpeech):
 	def __init__(self) -> None:  # pragma: no cover
 		"""Defines the constructor."""
 		self._event_types: tuple[str, ...] = ()
-		if sys.platform == "linux":  # pragma: no cover
-			with suppress(NameError):
-				self._sd = speechd.SSIPClient("speechlight")
-				self._sd.set_data_mode(speechd.DataMode.TEXT)
-				self._event_types = (
-					speechd.CallbackType.BEGIN,
-					speechd.CallbackType.CANCEL,
-					speechd.CallbackType.END,
-				)
 		self._is_speaking: bool = False
+		if sys.platform == "linux":  # pragma: no cover
+			self._sd = speechd.SSIPClient("speechlight")
+			self._sd.set_data_mode(speechd.DataMode.TEXT)
+			self._event_types = (
+				speechd.CallbackType.BEGIN,
+				speechd.CallbackType.CANCEL,
+				speechd.CallbackType.END,
+			)
 
 	def _speak_callback(self, event_type: str, *, index_mark: str | None = None) -> None:
 		"""

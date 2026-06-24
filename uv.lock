@@ -206,7 +206,6 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
     { name = "typing-extensions", version = "4.12.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
-    { name = "typing-extensions", version = "4.15.0", source = { registry = "https://pypi.org/simple" }, marker = "python_version < '0'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/9f/c7/f1f3b7176b2bfe81bc46f872ea1c3256a5ab32ea8664b7d7995839fbad38/knickknacks-0.8.0.tar.gz", hash = "sha256:2b841a72597f4bfa6e4efa59970aee08994a8ac8e4048a8c082767a407b7e38c", size = 74707, upload-time = "2026-06-05T22:26:29.138Z" }
 wheels = [
@@ -3479,6 +3478,11 @@ wheels = [
 ]
 
 [[package]]
+name = "python-speechd"
+version = "0.12.1"
+source = { git = "https://github.com/nstockton/python-speechd.git?rev=v0.12.1#11d448d073429dfd2b222346d0571df968fa3a0a" }
+
+[[package]]
 name = "pytkdocs"
 version = "0.15.1.dev7+g9991d49"
 source = { git = "https://github.com/nstockton/pytkdocs.git?rev=9991d493b408c403ac5691074e2af2e509f22926#9991d493b408c403ac5691074e2af2e509f22926" }
@@ -3601,6 +3605,7 @@ source = { editable = "." }
 dependencies = [
     { name = "knickknacks" },
     { name = "pyobjc", marker = "sys_platform == 'darwin'" },
+    { name = "python-speechd", marker = "sys_platform == 'linux'" },
     { name = "pywin32", marker = "sys_platform == 'win32'" },
 ]
 
@@ -3631,6 +3636,7 @@ test = [
 requires-dist = [
     { name = "knickknacks", specifier = ">=0.8,<1.0" },
     { name = "pyobjc", marker = "sys_platform == 'darwin'", specifier = ">=12.0,<13.0" },
+    { name = "python-speechd", marker = "sys_platform == 'linux'", git = "https://github.com/nstockton/python-speechd.git?rev=v0.12.1" },
     { name = "pywin32", marker = "sys_platform == 'win32'", specifier = ">=311,<400" },
 ]
 
