@@ -170,6 +170,10 @@ class Speech(BaseSpeech):
 				else:
 					self._sd.set_data_mode(speechd.DataMode.TEXT)
 
+	def __del__(self) -> None:  # pragma: no cover
+		if self._sd is not None:
+			self._sd.close()
+
 	def _speak_callback(self, event_type: str, *, index_mark: str | None = None) -> None:
 		"""
 		Handle callbacks from Speech Dispatcher.
