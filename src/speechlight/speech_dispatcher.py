@@ -27,6 +27,7 @@ from __future__ import annotations
 # Built-in Modules:
 import logging
 import sys
+import warnings
 from collections.abc import Iterable
 from typing import Protocol, TypeAlias
 
@@ -160,12 +161,14 @@ class Speech(BaseSpeech):
 				speechd.CallbackType.CANCEL,
 				speechd.CallbackType.END,
 			)
-			try:
-				self._sd = speechd.SSIPClient("speechlight")
-			except speechd.client.SSIPCommunicationError as e:
-				logger.debug(f"Unable to communicate with Speech Dispatcher: {e}")
-			else:
-				self._sd.set_data_mode(speechd.DataMode.TEXT)
+			with warnings.catch_warnings():
+				warnings.simplefilter("ignore", ResourceWarning)
+				try:
+					self._sd = speechd.SSIPClient("speechlight")
+				except speechd.client.SSIPCommunicationError as e:
+					logger.debug(f"Unable to communicate with Speech Dispatcher: {e}")
+				else:
+					self._sd.set_data_mode(speechd.DataMode.TEXT)
 
 	def _speak_callback(self, event_type: str, *, index_mark: str | None = None) -> None:
 		"""
