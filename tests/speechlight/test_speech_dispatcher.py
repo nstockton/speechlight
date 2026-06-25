@@ -23,12 +23,14 @@
 from __future__ import annotations
 
 # Built-in Modules:
-from unittest import TestCase, mock
+from unittest import TestCase
+from unittest.mock import Mock, patch
 
 # Speechlight Modules:
 from speechlight.speech_dispatcher import Speech
 
 
+@patch("speechlight.speech_dispatcher.logger", Mock())
 class TestSpeechDispatcher(TestCase):
 	def setUp(self) -> None:
 		self.text: str = "This is a test."
@@ -40,16 +42,16 @@ class TestSpeechDispatcher(TestCase):
 	def test_braille(self) -> None:
 		self.speech.braille(self.text)
 
-	@mock.patch("speechlight.speech_dispatcher.Speech.braille")
-	@mock.patch("speechlight.speech_dispatcher.Speech.say")
-	def test_output(self, mock_say: mock.Mock, mock_braille: mock.Mock) -> None:
+	@patch("speechlight.speech_dispatcher.Speech.braille")
+	@patch("speechlight.speech_dispatcher.Speech.say")
+	def test_output(self, mock_say: Mock, mock_braille: Mock) -> None:
 		self.speech.output(self.text, interrupt=True)
 		mock_say.assert_called_once_with(self.text, interrupt=True)
 		mock_braille.assert_called_once_with(self.text)
 
-	@mock.patch("speechlight.speech_dispatcher.Speech.silence")
-	def test_say(self, mock_silence: mock.Mock) -> None:
-		with mock.patch.object(self.speech, "_sd", mock.Mock()) as mock_sd:
+	@patch("speechlight.speech_dispatcher.Speech.silence")
+	def test_say(self, mock_silence: Mock) -> None:
+		with patch.object(self.speech, "_sd", Mock()) as mock_sd:
 			self.speech.say(self.text)
 			mock_sd.speak.assert_called_once()
 			mock_sd.reset_mock()
@@ -58,7 +60,7 @@ class TestSpeechDispatcher(TestCase):
 			mock_sd.speak.assert_called_once()
 
 	def test_silence(self) -> None:
-		with mock.patch.object(self.speech, "_sd", mock.Mock()) as mock_sd:
+		with patch.object(self.speech, "_sd", Mock()) as mock_sd:
 			self.speech.silence()
 			mock_sd.cancel.assert_called_once()
 

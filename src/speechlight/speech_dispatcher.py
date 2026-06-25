@@ -25,6 +25,7 @@
 from __future__ import annotations
 
 # Built-in Modules:
+import logging
 import sys
 from collections.abc import Iterable
 from typing import Protocol, TypeAlias
@@ -37,7 +38,11 @@ if sys.platform == "linux":  # pragma: no cover
 	import speechd
 
 
+# Constants:
 SDListVoicesType: TypeAlias = tuple[tuple[str, str | None, str | None], ...]
+
+# Globals:
+logger: logging.Logger = logging.getLogger(__name__)
 
 
 class SDEventCallbackType(Protocol):
@@ -150,13 +155,17 @@ class Speech(BaseSpeech):
 		self._event_types: tuple[str, ...] = ()
 		self._is_speaking: bool = False
 		if sys.platform == "linux":  # pragma: no cover
-			self._sd = speechd.SSIPClient("speechlight")
-			self._sd.set_data_mode(speechd.DataMode.TEXT)
 			self._event_types = (
 				speechd.CallbackType.BEGIN,
 				speechd.CallbackType.CANCEL,
 				speechd.CallbackType.END,
 			)
+			try:
+				self._sd = speechd.SSIPClient("speechlight")
+			except speechd.client.SSIPCommunicationError as e:
+				logger.debug(f"Unable to communicate with Speech Dispatcher: {e}")
+			else:
+				self._sd.set_data_mode(speechd.DataMode.TEXT)
 
 	def _speak_callback(self, event_type: str, *, index_mark: str | None = None) -> None:
 		"""
