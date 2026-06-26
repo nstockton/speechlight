@@ -14,7 +14,7 @@
 	dependencies = [
 		"knickknacks>=0.8,<1.0",
 		"pyobjc>=12.0,<13.0; sys_platform == \"darwin\"",
-		"python-speechd @ git+https://github.com/nstockton/python-speechd.git@v0.12.1 ; sys_platform == \"linux\"",
+		"speechd-unofficial>=0.12,<0.13; sys_platform == \"linux\"",
 		"pywin32>=311,<400; sys_platform == \"win32\"",
 	]
 	dynamic = ["version"]

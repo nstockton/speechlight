@@ -3478,11 +3478,6 @@ wheels = [
 ]
 
 [[package]]
-name = "python-speechd"
-version = "0.12.1"
-source = { git = "https://github.com/nstockton/python-speechd.git?rev=v0.12.1#11d448d073429dfd2b222346d0571df968fa3a0a" }
-
-[[package]]
 name = "pytkdocs"
 version = "0.15.1.dev7+g9991d49"
 source = { git = "https://github.com/nstockton/pytkdocs.git?rev=9991d493b408c403ac5691074e2af2e509f22926#9991d493b408c403ac5691074e2af2e509f22926" }
@@ -3600,13 +3595,22 @@ wheels = [
 ]
 
 [[package]]
+name = "speechd-unofficial"
+version = "0.12.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c4/57/4b92ba8af272c32c1f4b2e17e6cb85172ab99be9bd7c495bf62278de7131/speechd_unofficial-0.12.1.tar.gz", hash = "sha256:0d6c850b25077878704f9faa49658dedd865bebf1d30e6e8a596de8e61ed1eb1", size = 23396, upload-time = "2026-06-26T04:42:58.919Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/74/15/b587ba37d57adc204c3ca22dbf5a7824028f79a123d864d24c1420bff5a8/speechd_unofficial-0.12.1-py3-none-any.whl", hash = "sha256:2d36c07bc913f0ee7c4541f00dd5071c30c59d44cc6f7bad38c853f922bfd1ea", size = 24854, upload-time = "2026-06-26T04:42:57.719Z" },
+]
+
+[[package]]
 name = "speechlight"
 source = { editable = "." }
 dependencies = [
     { name = "knickknacks" },
     { name = "pyobjc", marker = "sys_platform == 'darwin'" },
-    { name = "python-speechd", marker = "sys_platform == 'linux'" },
     { name = "pywin32", marker = "sys_platform == 'win32'" },
+    { name = "speechd-unofficial", marker = "sys_platform == 'linux'" },
 ]
 
 [package.dev-dependencies]
@@ -3636,8 +3640,8 @@ test = [
 requires-dist = [
     { name = "knickknacks", specifier = ">=0.8,<1.0" },
     { name = "pyobjc", marker = "sys_platform == 'darwin'", specifier = ">=12.0,<13.0" },
-    { name = "python-speechd", marker = "sys_platform == 'linux'", git = "https://github.com/nstockton/python-speechd.git?rev=v0.12.1" },
     { name = "pywin32", marker = "sys_platform == 'win32'", specifier = ">=311,<400" },
+    { name = "speechd-unofficial", marker = "sys_platform == 'linux'", specifier = ">=0.12,<0.13" },
 ]
 
 [package.metadata.requires-dev]
