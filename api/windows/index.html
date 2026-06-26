@@ -853,11 +853,11 @@
           <div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Speech</span><span class="p">(</span><span class="n">BaseSpeech</span><span class="p">):</span>  <span class="c1"># NOQA: PLR0904</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;Implements Speech for Windows.&quot;&quot;&quot;</span>
 
-	<span class="n">_find_window</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-	<span class="n">_nvda</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-	<span class="n">_sa</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-	<span class="n">_sapi</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-	<span class="n">_jfw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="n">_find_window</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="n">_nvda</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="n">_sa</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="n">_sapi</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="n">_jfw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
 	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;Defines the constructor.&quot;&quot;&quot;</span>
@@ -876,13 +876,13 @@
 			<span class="bp">self</span><span class="o">.</span><span class="n">_sa</span><span class="o">.</span><span class="n">SA_SayW</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_wchar_p</span><span class="p">,)</span>
 
 	<span class="nd">@property</span>
-	<span class="k">def</span><span class="w"> </span><span class="nf">sapi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># type: ignore[misc] # pragma: no cover</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">sapi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;The SAPI COM object.&quot;&quot;&quot;</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_sapi</span> <span class="o">=</span> <span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;SAPI.SpVoice&quot;</span><span class="p">)</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sapi</span>
 
 	<span class="nd">@property</span>
-	<span class="k">def</span><span class="w"> </span><span class="nf">jfw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># type: ignore[misc] # pragma: no cover</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">jfw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;The JFW COM object.&quot;&quot;&quot;</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_jfw</span> <span class="o">=</span> <span class="n">dispatch</span><span class="p">(</span><span class="s2">&quot;FreedomSci.JawsApi&quot;</span><span class="p">)</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jfw</span>
