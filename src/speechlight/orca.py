@@ -28,7 +28,7 @@ from __future__ import annotations
 import logging
 import sys
 from contextlib import suppress
-from typing import Any, Protocol
+from typing import Any, Protocol, cast
 
 # Third-party Modules:
 from knickknacks.typedef import Self
@@ -38,7 +38,7 @@ from .base import BaseSpeech
 
 
 if sys.platform == "linux":  # pragma: no cover
-	from jeepney import DBusAddress, MessageType, new_method_call
+	from jeepney import DBusAddress, MessageFlag, MessageType, new_method_call
 	from jeepney.io.blocking import open_dbus_connection
 	from jeepney.wrappers import unwrap_msg
 else:  # pragma: no cover
@@ -55,13 +55,18 @@ else:  # pragma: no cover
 	class MessageType:
 		error = object()
 
+	class MessageFlag:
+		no_reply_expected = 1
+		no_auto_start = 2
+		allow_interactive_authorization = 4
+
 	def new_method_call(
 		remote_obj: DBusAddress,
 		method: str,
 		signature: str = "",
 		body: tuple[Any, ...] = (),
-	) -> object:
-		return object()
+	) -> _DBusOutMessage:
+		return cast(_DBusOutMessage, object())
 
 	def open_dbus_connection(bus: str = "SESSION") -> _DBusConnection:
 		raise RuntimeError("jeepney is only available on Linux")
@@ -105,11 +110,22 @@ class _DBusMessage(Protocol):
 	body: object
 
 
+class _OutMessageHeader(Protocol):
+	flags: int
+
+
+class _DBusOutMessage(Protocol):
+	"""A method-call message we are about to send (needs writable header.flags)."""
+
+	header: _OutMessageHeader
+
+
 class _DBusConnection(Protocol):
 	def close(self) -> None: ...
+	def send(self, message: _DBusOutMessage, serial: int | None = None) -> None: ...
 	def send_and_get_reply(
 		self,
-		message: object,
+		message: _DBusOutMessage,
 		*,
 		timeout: float | None = None,
 	) -> _DBusMessage: ...
@@ -173,6 +189,27 @@ class Orca:
 			return result[0]
 		return result
 
+	def _call_noreply(  # NOQA: PLR0913
+		self,
+		*,
+		path: str,
+		interface: str,
+		method: str,
+		signature: str = "",
+		body: tuple[Any, ...] = (),
+		bus_name: str | None = None,
+	) -> None:
+		if self._conn is None:
+			raise OrcaNotAvailableError("No D-Bus connection")
+		addr = DBusAddress(path, bus_name=bus_name or BUS_NAME, interface=interface)
+		msg = new_method_call(addr, method, signature, body)
+		# Tell the peer not to send a method return / error reply.
+		msg.header.flags |= MessageFlag.no_reply_expected
+		try:
+			self._conn.send(msg)
+		except Exception as e:
+			raise OrcaError(f"D-Bus send {interface}.{method} failed: {e}") from e
+
 	def _name_has_owner(self, name: str) -> bool:
 		try:
 			result = self._call(
@@ -213,7 +250,7 @@ class Orca:
 			with suppress(OrcaSpeakError):
 				self.silence()
 		try:
-			result = self._call(
+			self._call_noreply(
 				path=SERVICE_PATH,
 				interface=SERVICE_INTERFACE,
 				method="PresentMessage",
@@ -222,14 +259,12 @@ class Orca:
 			)
 		except OrcaError as e:
 			raise OrcaSpeakError(str(e)) from e
-		if not result:
-			raise OrcaSpeakError("PresentMessage returned False")
 
 	def silence(self) -> None:
 		if not self.available:
 			raise OrcaNotAvailableError("Orca not found")
 		try:
-			result = self._call(
+			self._call_noreply(
 				path=str(self._speech_path),
 				interface=SPEECH_INTERFACE,
 				method="ExecuteCommand",
@@ -238,8 +273,6 @@ class Orca:
 			)
 		except OrcaError as e:
 			raise OrcaSpeakError(str(e)) from e
-		if not result:
-			raise OrcaSpeakError("InterruptSpeech returned False")
 
 	def version(self) -> str:
 		if not self.available:
@@ -257,13 +290,39 @@ class Speech(BaseSpeech):
 
 	def __init__(self) -> None:  # pragma: no cover
 		"""Defines the constructor."""
+		self._orca: Orca | None = None
 
 	@property
 	def version(self) -> str:
 		"""The version of Orca currently running."""
-		with suppress(OrcaError), Orca() as o:
-			return o.version()
+		o = self._get_orca()
+		if o is not None:
+			with suppress(OrcaError):
+				return o.version()
 		return ""
+
+	def _get_orca(self) -> Orca | None:
+		"""Return a connected Orca wrapper, opening one if needed."""
+		if self._orca is not None:
+			if self._orca.available:
+				return self._orca
+			with suppress(Exception):
+				self._orca.close()
+			self._orca = None
+		o = Orca()
+		o.open_connection()
+		if o.available:
+			self._orca = o
+			return o
+		with suppress(Exception):
+			o.close()
+		return None
+
+	def __del__(self) -> None:  # pragma: no cover
+		if self._orca is not None:
+			with suppress(Exception):
+				self._orca.close()
+			self._orca = None
 
 	def braille(self, text: str) -> None:
 		pass
@@ -272,14 +331,18 @@ class Speech(BaseSpeech):
 		self.say(text, interrupt=interrupt)
 		self.braille(text)
 
-	@staticmethod
-	def say(text: str, *, interrupt: bool = False) -> None:
-		with suppress(OrcaError), Orca() as o:
+	def say(self, text: str, *, interrupt: bool = False) -> None:
+		o = self._get_orca()
+		if o is None:
+			return
+		with suppress(OrcaError):
 			o.say(text, interrupt=interrupt)
 
-	@staticmethod
-	def silence() -> None:
-		with suppress(OrcaError), Orca() as o:
+	def silence(self) -> None:
+		o = self._get_orca()
+		if o is None:
+			return
+		with suppress(OrcaError):
 			o.silence()
 
 	@staticmethod

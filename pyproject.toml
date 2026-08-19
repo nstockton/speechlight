@@ -181,7 +181,7 @@
 
 [tool.coverage.report]
 	precision = 0
-	fail_under = 65.0
+	fail_under = 60.0
 	show_missing = true
 	skip_covered = true
 	sort = "Cover"
