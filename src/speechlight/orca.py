@@ -28,7 +28,8 @@ from __future__ import annotations
 import logging
 import sys
 from contextlib import suppress
-from typing import Any, Protocol, cast
+from dataclasses import dataclass, field
+from typing import Any, Final, Protocol, cast
 
 # Third-party Modules:
 from knickknacks.typedef import Self
@@ -76,14 +77,17 @@ else:  # pragma: no cover
 
 
 # Constants:
-BUS_NAME: str = "org.gnome.Orca.Service"
-SERVICE_PATH: str = "/org/gnome/Orca/Service"
-SERVICE_INTERFACE: str = "org.gnome.Orca.Service"
-SPEECH_PATHS: tuple[str, ...] = (
+DBUS_NAME: Final[str] = "org.freedesktop.DBus"
+DBUS_PATH: Final[str] = "/org/freedesktop/DBus"
+DBUS_INTERFACE: Final[str] = "org.freedesktop.DBus"
+ORCA_BUS_NAME: Final[str] = "org.gnome.Orca.Service"
+ORCA_SERVICE_PATH: Final[str] = "/org/gnome/Orca/Service"
+ORCA_SERVICE_INTERFACE: Final[str] = "org.gnome.Orca.Service"
+ORCA_SPEECH_PATHS: Final[tuple[str, ...]] = (
 	"/org/gnome/Orca/Service/SpeechAndVerbosityManager",
 	"/org/gnome/Orca/Service/SpeechManager",
 )
-SPEECH_INTERFACE: str = "org.gnome.Orca.Module"
+ORCA_MODULE_INTERFACE: Final[str] = "org.gnome.Orca.Module"
 
 # Globals:
 logger: logging.Logger = logging.getLogger(__name__)
@@ -131,27 +135,22 @@ class _DBusConnection(Protocol):
 	) -> _DBusMessage: ...
 
 
+@dataclass(slots=True)
+class _DBusCall:
+	path: str
+	bus_name: str
+	interface: str
+	method: str
+	signature: str = ""
+	body: tuple[Any, ...] = field(default_factory=tuple)
+	no_reply: bool = False
+	timeout: float | None = 5.0
+
+
 class Orca:
 	def __init__(self) -> None:
 		self._conn: _DBusConnection | None = None
 		self._speech_path: str | None = None
-
-	def open_connection(self) -> None:
-		try:
-			self._conn = open_dbus_connection(bus="SESSION")
-			self._detect()
-		except Exception as e:  # NOQA: BLE001
-			# Intentionally broad so missing jeepney/bus/Orca never crashes callers.
-			logger.debug(f"Failed to open D-Bus connection or detect Orca: {e}")
-			self.close()
-
-	def close(self) -> None:
-		"""Close the underlying D-Bus connection."""
-		if self._conn is not None:
-			with suppress(Exception):
-				self._conn.close()
-			self._conn = None
-			self._speech_path = None
 
 	def __enter__(self) -> Self:
 		self.open_connection()
@@ -163,25 +162,67 @@ class Orca:
 	def __del__(self) -> None:
 		self.close()
 
-	def _call(  # NOQA: PLR0913
-		self,
-		*,
-		path: str,
-		interface: str,
-		method: str,
-		signature: str = "",
-		body: tuple[Any, ...] = (),
-		bus_name: str | None = None,
-		timeout: float | None = 5.0,
-	) -> Any:
+	def close(self) -> None:
+		"""Close the underlying D-Bus connection."""
+		if self._conn is not None:
+			with suppress(Exception):
+				self._conn.close()
+		self._conn = None
+		self._speech_path = None
+
+	def open_connection(self) -> None:
+		try:
+			self._conn = open_dbus_connection(bus="SESSION")
+			self._detect()
+		except Exception as e:  # NOQA: BLE001
+			# Intentionally broad so missing jeepney/bus/Orca never crashes callers.
+			logger.debug(f"Failed to open D-Bus connection or detect Orca: {e}")
+			self.close()
+
+	def _detect(self) -> None:
+		if self._has_owner(ORCA_BUS_NAME):
+			for path in ORCA_SPEECH_PATHS:
+				call = _DBusCall(
+					path=path,
+					bus_name=ORCA_BUS_NAME,
+					interface=ORCA_MODULE_INTERFACE,
+					method="ListCommands",
+				)
+				with suppress(OrcaError):
+					self._call(call)
+					self._speech_path = path
+					logger.debug(f"Detected Orca at {path}")
+					return
+		logger.debug("No usable Orca service found")
+		self.close()
+
+	def _has_owner(self, name: str) -> bool:
+		call = _DBusCall(
+			path=DBUS_PATH,
+			bus_name=DBUS_NAME,
+			interface=DBUS_INTERFACE,
+			method="NameHasOwner",
+			signature="s",
+			body=(name,),
+		)
+		with suppress(OrcaError):
+			return bool(self._call(call))
+		return False
+
+	def _call(self, call: _DBusCall) -> Any:
 		if self._conn is None:
 			raise OrcaNotAvailableError("No D-Bus connection")
-		addr = DBusAddress(path, bus_name=bus_name or BUS_NAME, interface=interface)
-		msg = new_method_call(addr, method, signature, body)
+		addr = DBusAddress(call.path, bus_name=call.bus_name, interface=call.interface)
+		msg = new_method_call(addr, call.method, call.signature, call.body)
 		try:
-			reply = self._conn.send_and_get_reply(msg, timeout=timeout)
+			if call.no_reply:
+				# Tell the peer not to send a method return / error reply.
+				msg.header.flags |= MessageFlag.no_reply_expected
+				self._conn.send(msg)
+				return None
+			reply = self._conn.send_and_get_reply(msg, timeout=call.timeout)
 		except Exception as e:
-			raise OrcaError(f"D-Bus call {interface}.{method} failed: {e}") from e
+			raise OrcaError(f"D-Bus call {call.interface}.{call.method} failed: {e}") from e
 		if reply.header.message_type == MessageType.error:
 			raise OrcaError(f"D-Bus error: {reply.body}")
 		result: tuple[Any, ...] = unwrap_msg(reply)
@@ -189,100 +230,57 @@ class Orca:
 			return result[0]
 		return result
 
-	def _call_noreply(  # NOQA: PLR0913
-		self,
-		*,
-		path: str,
-		interface: str,
-		method: str,
-		signature: str = "",
-		body: tuple[Any, ...] = (),
-		bus_name: str | None = None,
-	) -> None:
-		if self._conn is None:
-			raise OrcaNotAvailableError("No D-Bus connection")
-		addr = DBusAddress(path, bus_name=bus_name or BUS_NAME, interface=interface)
-		msg = new_method_call(addr, method, signature, body)
-		# Tell the peer not to send a method return / error reply.
-		msg.header.flags |= MessageFlag.no_reply_expected
-		try:
-			self._conn.send(msg)
-		except Exception as e:
-			raise OrcaError(f"D-Bus send {interface}.{method} failed: {e}") from e
-
-	def _name_has_owner(self, name: str) -> bool:
-		try:
-			result = self._call(
-				path="/org/freedesktop/DBus",
-				interface="org.freedesktop.DBus",
-				method="NameHasOwner",
-				signature="s",
-				body=(name,),
-				bus_name="org.freedesktop.DBus",
-			)
-			return bool(result)
-		except OrcaError:
-			return False
-
-	def _detect(self) -> None:
-		if self._name_has_owner(BUS_NAME):
-			for path in SPEECH_PATHS:
-				with suppress(OrcaError):
-					self._call(
-						path=path,
-						interface=SPEECH_INTERFACE,
-						method="ListCommands",
-						bus_name=BUS_NAME,
-					)
-					self._speech_path = path
-					logger.debug(f"Detected Orca at {path}")
-					return
-		logger.debug("No usable Orca service found")
-
 	@property
 	def available(self) -> bool:
 		return self._conn is not None and self._speech_path is not None
 
-	def say(self, text: str, *, interrupt: bool = False) -> None:
+	def present_message(self, text: str, *, interrupt: bool = False) -> None:
 		if not self.available:
 			raise OrcaNotAvailableError("Orca not found")
 		if interrupt:
 			with suppress(OrcaSpeakError):
-				self.silence()
+				self.interrupt_speech()
+		call = _DBusCall(
+			path=ORCA_SERVICE_PATH,
+			bus_name=ORCA_BUS_NAME,
+			interface=ORCA_SERVICE_INTERFACE,
+			method="PresentMessage",
+			signature="s",
+			body=(text,),
+			no_reply=True,
+		)
 		try:
-			self._call_noreply(
-				path=SERVICE_PATH,
-				interface=SERVICE_INTERFACE,
-				method="PresentMessage",
-				signature="s",
-				body=(text,),
-			)
+			self._call(call)
 		except OrcaError as e:
 			raise OrcaSpeakError(str(e)) from e
 
-	def silence(self) -> None:
+	def interrupt_speech(self) -> None:
 		if not self.available:
 			raise OrcaNotAvailableError("Orca not found")
+		call = _DBusCall(
+			path=str(self._speech_path),
+			bus_name=ORCA_BUS_NAME,
+			interface=ORCA_MODULE_INTERFACE,
+			method="ExecuteCommand",
+			signature="sb",
+			body=("InterruptSpeech", False),
+			no_reply=True,
+		)
 		try:
-			self._call_noreply(
-				path=str(self._speech_path),
-				interface=SPEECH_INTERFACE,
-				method="ExecuteCommand",
-				signature="sb",
-				body=("InterruptSpeech", False),
-			)
+			self._call(call)
 		except OrcaError as e:
 			raise OrcaSpeakError(str(e)) from e
 
-	def version(self) -> str:
+	def get_version(self) -> str:
 		if not self.available:
 			raise OrcaNotAvailableError("Orca not found")
-		result = self._call(
-			path=SERVICE_PATH,
-			interface=SERVICE_INTERFACE,
+		call = _DBusCall(
+			path=ORCA_SERVICE_PATH,
+			bus_name=ORCA_BUS_NAME,
+			interface=ORCA_SERVICE_INTERFACE,
 			method="GetVersion",
 		)
-		return str(result)
+		return str(self._call(call))
 
 
 class Speech(BaseSpeech):
@@ -290,60 +288,57 @@ class Speech(BaseSpeech):
 
 	def __init__(self) -> None:  # pragma: no cover
 		"""Defines the constructor."""
-		self._orca: Orca | None = None
+		self._orca: Orca
+		self._ensure_orca()
+
+	def __del__(self) -> None:  # pragma: no cover
+		if hasattr(self, "_orca"):
+			self._orca.close()
 
 	@property
 	def version(self) -> str:
 		"""The version of Orca currently running."""
-		o = self._get_orca()
-		if o is not None:
+		if self._ensure_orca():
 			with suppress(OrcaError):
-				return o.version()
+				return self._orca.get_version()
 		return ""
 
-	def _get_orca(self) -> Orca | None:
-		"""Return a connected Orca wrapper, opening one if needed."""
-		if self._orca is not None:
+	def _ensure_orca(self) -> bool:
+		"""
+		Ensures that Orca is available, establishing a new connection if necessary.
+
+		Returns:
+			True if Orca is available, False otherwise.
+		"""
+		if hasattr(self, "_orca"):
 			if self._orca.available:
-				return self._orca
-			with suppress(Exception):
-				self._orca.close()
-			self._orca = None
+				return True
+			self._orca.close()
 		o = Orca()
 		o.open_connection()
 		if o.available:
 			self._orca = o
-			return o
-		with suppress(Exception):
-			o.close()
-		return None
-
-	def __del__(self) -> None:  # pragma: no cover
-		if self._orca is not None:
-			with suppress(Exception):
-				self._orca.close()
-			self._orca = None
+			return True
+		o.close()
+		return False
 
 	def braille(self, text: str) -> None:
-		pass
+		# Change this if Braille-only support is added to Orca.
+		self.output(text)
 
 	def output(self, text: str, *, interrupt: bool = False) -> None:
-		self.say(text, interrupt=interrupt)
-		self.braille(text)
+		if self._ensure_orca():
+			with suppress(OrcaError):
+				self._orca.present_message(text, interrupt=interrupt)
 
 	def say(self, text: str, *, interrupt: bool = False) -> None:
-		o = self._get_orca()
-		if o is None:
-			return
-		with suppress(OrcaError):
-			o.say(text, interrupt=interrupt)
+		# Change this if speak-only support is added to Orca.
+		self.output(text, interrupt=interrupt)
 
 	def silence(self) -> None:
-		o = self._get_orca()
-		if o is None:
-			return
-		with suppress(OrcaError):
-			o.silence()
+		if self._ensure_orca():
+			with suppress(OrcaError):
+				self._orca.interrupt_speech()
 
 	@staticmethod
 	def speaking() -> bool:

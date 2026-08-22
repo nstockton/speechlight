@@ -45,5 +45,6 @@ class Speech(BaseSpeech):
 	def silence(self) -> None:  # NOQA: D102
 		pass
 
-	def speaking(self) -> bool:  # NOQA: D102, PLR6301
+	@staticmethod
+	def speaking() -> bool:  # NOQA: D102
 		return False
