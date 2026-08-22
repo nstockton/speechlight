@@ -570,7 +570,8 @@
 	<span class="k">def</span><span class="w"> </span><span class="nf">silence</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># NOQA: D102</span>
 		<span class="k">pass</span>
 
-	<span class="k">def</span><span class="w"> </span><span class="nf">speaking</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># NOQA: D102, PLR6301</span>
+	<span class="nd">@staticmethod</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">speaking</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># NOQA: D102</span>
 		<span class="k">return</span> <span class="kc">False</span>
 </code></pre></div>
         </details>
@@ -767,8 +768,11 @@
 
 
 <h3 id="speechlight.dummy.Speech.speaking" class="doc doc-heading">
-<code class="codehilite language-python"><span class="n">Method</span> <span class="n">speaking</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="codehilite language-python"><span class="n">Method</span> <span class="n">speaking</span><span class="p">()</span></code>
 
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
+  </span>
 
 <a href="#speechlight.dummy.Speech.speaking" class="headerlink" title="Permanent link">&para;</a></h3>
 
@@ -793,7 +797,8 @@
 </table>
         <details class="quote">
           <summary>Source code in <code>speechlight/dummy.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">speaking</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># NOQA: D102, PLR6301</span>
+          <div class="codehilite"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">speaking</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># NOQA: D102</span>
 	<span class="k">return</span> <span class="kc">False</span>
 </code></pre></div>
         </details>
